@@ -1,0 +1,52 @@
+{
+  "report_dir": "/Users/tfarrell/Code/pcrl/pcrl_data_management/pcrl_data_management/test_plots/", 
+  "station_schematic": {
+    "JB67": "801", 
+    "29351": "605", 
+    "JB68": "802", 
+    "29319": "603", 
+    "29356": "606", 
+    "29132": "602", 
+    "28254": "404", 
+    "29447": "608", 
+    "28944": "502", 
+    "28212": "403", 
+    "28966": "503", 
+    "29360": "607", 
+    "29342": "604", 
+    "28988": "507", 
+    "28716": "501", 
+    "JG89": "804", 
+    "28987": "506", 
+    "28133": "402", 
+    "JG36": "803", 
+    "29065": "601", 
+    "29061": "508", 
+    "28977": "505", 
+    "27793": "401", 
+    "28973": "504"
+  }, 
+  "data_dir": "X:\\Data_Archive1", 
+  "supp_feed_template": {
+    "pineapple": 7.0, 
+    "banana": 4.0, 
+    "apple": 3.0
+  }, 
+  "dispense_amount": [
+    10.0, 
+    10.0, 
+    13.0
+  ], 
+  "feeder_caloric_density": [
+    0.5, 
+    0.75, 
+    0.32
+  ], 
+  "report_custom": false, 
+  "custom_dates": {
+    "to": "10-19-2015", 
+    "from": "10-10-2015"
+  }, 
+  "feeding_hour_threshold": 26, 
+  "days": 10
+}
