@@ -83,3 +83,6 @@ X:\Documents\projects\pcrl\pcrl_data_management\pcrl_data_management\PCRLLogbook
 X:\Documents\projects\pcrl\pcrl_data_management\pcrl_data_management\PCRLLogbook[final]\PCRLLogbook[final]\PCRLLogbook[final]\obj\Release\PCRLLogbook.ReportForm.resources
 X:\Documents\projects\pcrl\pcrl_data_management\pcrl_data_management\PCRLLogbook[final]\PCRLLogbook[final]\PCRLLogbook[final]\obj\Release\PCRLLogbook.ReviewForm.resources
 X:\Documents\projects\pcrl\pcrl_data_management\pcrl_data_management\PCRLLogbook[final]\PCRLLogbook[final]\PCRLLogbook[final]\obj\Release\PCRLLogbook.csproj.GenerateResource.Cache
+X:\Documents\projects\PCRL_Logbook\pcrl_data_management\PCRLLogbook[final]\PCRLLogbook[final]\bin\Release\PCRLLogbook[final].exe.config
+X:\Documents\projects\PCRL_Logbook\pcrl_data_management\PCRLLogbook[final]\PCRLLogbook[final]\obj\Release\PCRLLogbook[final].exe
+X:\Documents\projects\PCRL_Logbook\pcrl_data_management\PCRLLogbook[final]\PCRLLogbook[final]\obj\Release\PCRLLogbook[final].pdb

@@ -1,8 +1,10 @@
 ﻿using System;
+using System.IO; 
 using System.Data;
 using System.Linq;
 using System.Text;
 using System.Drawing;
+using Newtonsoft.Json;
 using System.Data.SQLite; 
 using System.Windows.Forms;
 using System.ComponentModel;
@@ -27,12 +29,12 @@ namespace PCRLLogbook
 
         private void saveButton_Click(object sender, EventArgs e)
         {
-            //if textboxes filled properly, init fields
+            //if textboxes not filled properly
             if (labMemberTextBox.Text.Equals(string.Empty)
                 || firstTextBox.Text.Equals(string.Empty)
                 || lastTextBox.Text.Equals(string.Empty))
             {
-                MessageBox.Show("Please fill in Username, First and Last names.");
+                MessageBox.Show("Please fill in user, first and last name fields.");
                 return; 
             }
             else if (!passwordTextBox.Text.Equals(confirmPasswordTextBox.Text))
@@ -41,23 +43,14 @@ namespace PCRLLogbook
                 return; 
             }
             else
-            {
+            {   // otherwise init fields
                 username = labMemberTextBox.Text;
                 name[0] = firstTextBox.Text;
                 name[1] = lastTextBox.Text;
                 password = passwordTextBox.Text;
-                cellNum = (cellNumberTextBox.Text.Equals(string.Empty)) ? string.Empty : cellNumberTextBox.Text;
+                cellNum = (cellNumberTextBox.Text.Equals(string.Empty)) ? 
+                            string.Empty : cellNumberTextBox.Text;
             }
-
-            // get all labmember data from db
-            SQLiteConnection m_dbConnection = new SQLiteConnection("DataSource=PCRL_phizer_study.db;Version=3");
-            m_dbConnection.Open();
-            string sql = "SELECT * FROM labmember";
-            SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
-            SQLiteDataReader reader = command.ExecuteReader();
-            while (reader.Read())
-                labmembers[reader["lab_member"].ToString()] = new string[3] { reader["password"].ToString(), reader["first"].ToString(), reader["last"].ToString() };
-            
 
             // match labmember to username to look in username already in use
             var user =
@@ -72,12 +65,20 @@ namespace PCRLLogbook
                 return;
             }
             else { 
-                //save to dataset
-                sql = "INSERT INTO labmember (lab_member, first, last, password, cell_num) VALUES ('" +
-                    username + "','" + name[0] + "','" + name[1] + "','" + password + "','" + cellNum + "')";
-                command = new SQLiteCommand(sql, m_dbConnection);
-                command.ExecuteNonQuery(); 
-                m_dbConnection.Close();
+                // add labmember to config data 
+                Login.config.labmember_data[username] = new Dictionary<string, string>(){ 
+                    {"first", name[0]}, 
+                    {"last", name[1]}, 
+                    {"password", password}, 
+                    {"cellnum", cellNum}
+                }; 
+
+                // write config to file 
+                string json = JsonConvert.SerializeObject(Login.config, Formatting.Indented);
+                using (StreamWriter outputFile = new StreamWriter(Login.config_path))
+                {
+                    outputFile.WriteLine(json);
+                }
 
                 MessageBox.Show("Update successful");
 

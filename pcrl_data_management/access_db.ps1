@@ -1,1 +1,1 @@
-C:\Users\Server1\Desktop\PCRL_Logbook\pcrl_data_management\sqlite3.exe 'C:\Users\Server1\Desktop\PCRL_Logbook\pcrl_data_management\PCRLLogbook[final]\PCRLLogbook[final]\bin\Release\PCRL_phizer_study.db'
+.\sqlite3.exe '.\PCRL_phizer_study.db'

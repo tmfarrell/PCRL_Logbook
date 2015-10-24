@@ -10,12 +10,16 @@ namespace PCRLLogbook
         public int days { get; set; }
         public string data_dir {get; set;}
         public string report_dir { get; set; }
+        public bool report_custom { get; set; }
         public int feeding_hour_threshold { get; set; }
+        public Dictionary<string, string> custom_dates { get; set; }
+      
+        public Dictionary<string, Dictionary<string, double>> feeders { get; set; }
 
-        public IList<double> dispense_amount { get; set; }
-        public IList<double> feeder_caloric_density { get; set; }
+        public Dictionary<string, Dictionary<string, string>> supplemental_feed_data { get; set; }
 
-        public Dictionary<string, double> supp_feed_template { get; set; }
+        public Dictionary<string, Dictionary<string, string>> monkey_data { get; set; }
+        public Dictionary<string, Dictionary<string, string>> labmember_data { get; set; }
 
     }
 }

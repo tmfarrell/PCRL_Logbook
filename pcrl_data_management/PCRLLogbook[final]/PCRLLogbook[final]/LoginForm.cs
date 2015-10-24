@@ -1,9 +1,12 @@
 ﻿using System;
+using System.IO; 
 using System.Data;
 using System.Linq;
 using System.Text;
 using System.Drawing;
-using System.Data.SQLite; 
+using Newtonsoft.Json;
+using System.Data.SQLite;
+using System.Configuration;  
 using System.Windows.Forms;
 using System.ComponentModel;
 using System.Collections.Generic;
@@ -13,7 +16,11 @@ namespace PCRLLogbook
     public partial class LoginForm : Form
     {
         string password;
+        public Config config;
+        public string db_dir;
+        public string base_dir;  
         public string username;
+        public string config_path; 
         public string[] name = new string[2];
         Dictionary<string, string[]> username_pwd = new Dictionary<string, string[]>();
         
@@ -21,6 +28,28 @@ namespace PCRLLogbook
         public LoginForm()
         {
             InitializeComponent();
+
+            // init directory paths 
+            base_dir = "X:\\Documents\\projects\\PCRL_Logbook\\pcrl_data_management\\"; //ConfigurationSettings.AppSettings["BaseDirectory"];
+            db_dir = base_dir + "PCRL_phizer_study.db";
+            config_path = base_dir + "config.json";
+
+            // init config object from json file 
+            string json = "";
+            try
+            {
+                using (StreamReader sr = new StreamReader(config_path))
+                {
+                    json = sr.ReadToEnd();
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("The file could not be read:");
+                Console.WriteLine(e.Message);
+            }
+            MessageBox.Show(json); 
+            config = JsonConvert.DeserializeObject<Config>(json); 
         }
 
         private void loginButton_Click(object sender, EventArgs e)
@@ -34,29 +63,21 @@ namespace PCRLLogbook
             username = usernameTextbox.Text;
             password = passwordTextbox.Text;
 
-            // get all labmember data from db
-            SQLiteConnection m_dbConnection = new SQLiteConnection("DataSource=PCRL_phizer_study.db;Version=3");
-            m_dbConnection.Open(); 
-            string sql = "SELECT * FROM labmember";
-            SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
-            SQLiteDataReader reader = command.ExecuteReader();
-            while (reader.Read())
-                username_pwd[reader["lab_member"].ToString()] = new string[3] {reader["password"].ToString(), reader["first"].ToString(), reader["last"].ToString()};
-            m_dbConnection.Close(); 
+            // get labmember data from config 
+            Dictionary<string, Dictionary<string, string>> labmembers = config.labmember_data; 
 
             // match labmember to un and pwd 
             var user =
-                from labmember in username_pwd
-                where labmember.Key.Equals(username) && labmember.Value[0].Equals(password)
+                from labmember in labmembers
+                where labmember.Key.Equals(username) && labmember.Value["password"].Equals(password)
                 select labmember;
 
-            // if no match 
-            if (!user.Any())
+            if (!user.Any())    // if no match
                 MessageBox.Show("Invalid username or password.\nPlease proceed to create an account.");
             else
             {   // store name and open labroom form 
-                name[0] = username_pwd.First().Value[1];
-                name[1] = username_pwd.First().Value[2];  
+                name[0] = user.First().Value["first"]; 
+                name[1] = user.First().Value["last"];  
                 LabroomForm labroomForm = new LabroomForm(this);
                 labroomForm.Show();
                 Hide();

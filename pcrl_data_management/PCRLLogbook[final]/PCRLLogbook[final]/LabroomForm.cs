@@ -1,9 +1,12 @@
 ﻿using System;
+using System.IO; 
 using System.Data;
 using System.Linq;
 using System.Text;
 using System.Drawing;
+using Newtonsoft.Json;
 using System.Data.SQLite;
+using System.Configuration; 
 using System.Windows.Forms;
 using System.ComponentModel;
 using System.Collections.Generic;
@@ -12,9 +15,9 @@ namespace PCRLLogbook
 {
     public partial class LabroomForm : Form
     {
-        public string labMember;
+        public string labMember; 
         public DateTime loginTime;
-        public DateTime logoutTime;
+        public DateTime logoutTime; 
         public string labmemberName;
         public DateTime labroomCheckIn;
         public DateTime labroomCheckOut;
@@ -22,7 +25,8 @@ namespace PCRLLogbook
         public string[] LabroomNum = { "W715", "W716", "W718" };
         public Dictionary<string, LogData[]> Data = new Dictionary<string, LogData[]>();
         Dictionary<string, string> DBSchema = new Dictionary<string, string>() {
-	        {"observation", "(date_time, lab_member, labroom, behavior, stool, training, blood, comments, equip_deficiency, weight, monkey)"},
+	        {"observation", "(date_time, lab_member, labroom, behavior, stool, training, " + 
+                "blood, comments, equip_deficiency, weight, monkey)"},
             {"labmember", "(lab_member, first, last, password, cell_num)"}, 
             {"labroomlog", "(checkin, checkout, lab_member, labroom)"}, 
             {"loginlog", "(login, logout, lab_member)"}, 
@@ -37,15 +41,15 @@ namespace PCRLLogbook
         public LabroomForm(LoginForm login)
         {
             InitializeComponent();
-            
+
+            // set various parameter and UI element values 
             Login = login;
-           
             labMember = Login.username; 
             labmemberName = Login.name[0] + " " + Login.name[1]; 
             labmemberFillLabel.Text = labmemberName;
-            
             loginTime = DateTime.Now;
-            loginTimeFillLabel.Text = loginTime.ToShortTimeString() + " " + loginTime.ToLongDateString(); 
+            loginTimeFillLabel.Text = loginTime.ToShortTimeString() + " " + 
+                                        loginTime.ToLongDateString(); 
         }
 
         public void storeData(string labroom, LogData[] monksdata)
@@ -91,7 +95,8 @@ namespace PCRLLogbook
             logoutTime = DateTime.Now;
 
             // save the login and logout times to the DB's loginlog table 
-            SQLiteConnection m_dbConnection = new SQLiteConnection("Data Source=PCRL_phizer_study.db;Version=3;");
+            SQLiteConnection m_dbConnection = new SQLiteConnection("Data Source=" + 
+                                                            Login.db_dir + ";Version=3;");
             m_dbConnection.Open();
             string sql = "INSERT INTO loginlog" + DBSchema["loginlog"] + " VALUES ('" + 
                 labMember + "','" + loginTime + "','" + logoutTime + "')"; 
@@ -111,7 +116,8 @@ namespace PCRLLogbook
             labroomCheckOut = checkout;
 
             // save the checkin and checkout times to the DB's labroomlog table 
-            SQLiteConnection m_dbConnection = new SQLiteConnection("Data Source=PCRL_phizer_study.db;Version=3;");
+            SQLiteConnection m_dbConnection = new SQLiteConnection("Data Source=" +
+                                                            Login.db_dir + ";Version=3;");
             m_dbConnection.Open();
             string sql = "INSERT INTO labroomlog" + DBSchema["labroomlog"] + " VALUES ('" + 
                 labroomCheckIn + "','" + labroomCheckOut + "','" +
@@ -125,7 +131,7 @@ namespace PCRLLogbook
         {
             // open DB connection and declare command 
             SQLiteConnection m_dbConnection = 
-                new SQLiteConnection("Data Source=PCRL_phizer_study.db;Version=3;");
+                new SQLiteConnection("Data Source=" + Login.db_dir + ";Version=3;");
             m_dbConnection.Open();
 
             string sql;
@@ -137,20 +143,19 @@ namespace PCRLLogbook
                 { 
                     if (log.notEmpty())
                     {
-                        MessageBox.Show(log.toString());
-                        // need to review the schema and make sure it is consistent with the definition in the database 
-                        sql = "INSERT INTO observation" + DBSchema["observation"] + " VALUES ('" + DateTime.Now.ToString() +
-                            "','" + labMember + "','" + log.Labroom + "'," + log.Behavior + "," + log.Stool + "," + 
-                            log.Training + "," + Convert.ToInt16(log.Blood) + ",'" + log.Comments + "'," + log.getEquip() + "," + log.Weight + 
-                            ",'" + log.Mid + "')";
-                        MessageBox.Show(sql); 
+                        //MessageBox.Show(log.toString());
+                        sql = "INSERT INTO observation" + DBSchema["observation"] + " VALUES ('" + 
+                              DateTime.Now.ToString() + "','" + labMember + "','" + log.Labroom + 
+                              "'," + log.Behavior + "," + log.Stool + "," + log.Training + "," + 
+                              Convert.ToInt16(log.Blood) + ",'" + log.Comments + "'," + log.getEquip() + 
+                              "," + log.Weight + ",'" + log.Mid + "')";
+                        //MessageBox.Show(sql); 
                         command = new SQLiteCommand(sql, m_dbConnection);
                         command.ExecuteNonQuery(); 
                     }
                 }
             }
             m_dbConnection.Close(); 
-
             MessageBox.Show("Save successful");
         }
 
@@ -158,18 +163,6 @@ namespace PCRLLogbook
         {
             ReviewForm reviewForm = new ReviewForm(this);
             reviewForm.Show(); 
-        }
-
-        private void configButton_Click(object sender, EventArgs e)
-        {
-            if (configPath.Text == "" || configPath.Text.IndexOf(".json") == -1) {
-                MessageBox.Show("Must enter valid path of configuration file" + 
-                                "(e.g. C:\\Downloads\\pcrl_data_management\\config.json).");
-                return; 
-            }
-                
-            ConfigureForm configForm = new ConfigureForm(configPath.Text);
-            configForm.Show(); 
         }
     }
 }

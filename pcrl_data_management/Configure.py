@@ -741,31 +741,39 @@ app.MainLoop()
 
 days = 10
 feeding_hour_threshold = 26
-report_dir = "/Users/tfarrell/Code/pcrl/pcrl_data_management/" + \
-			 "pcrl_data_management/test_plots/"
+
 data_dir = "X:\Data_Archive1"
-feeder_caloric_density = [0.5, 0.75, 0.32]
-dispense_amount = [10.0, 10.0, 13.0]
-supp_feed_template = {'banana':4.0, 'apple':3.0, 'pineapple':7.0}
+report_dir = "C:\Users\Server1\PCRL_Logbook\reports\\"
+
 report_custom = False 
 custom_dates = {"from": "10-10-2015", "to": "10-19-2015"}
-monkeys = [l.split(',')[0] for l in open('X:\Documents\projects\pcrl\pcrl_data_management\pcrl_data_management\Monkey.txt').readlines()]
-station_schematic = {monkey: s for monkey, s in zip(monkeys, \
-						map(str, range(401, 405) + range(501, 509) + \
-								 range(601, 609) + range(801, 805)))}
+
+feeders = {f[0]: {'calories_per_dispense': f[1], 'dispense_amt':f[2]} for \
+	f in zip(['feeder0','feeder1','feeder2'],[0.5, 0.75, 0.32], [10.0, 10.0, 13.0])}
+
+monkeys = [l.split(',') for l in open('X:\Documents\projects\PCRL_Logbook\\' + \
+				'pcrl_data_management\Monkey.txt').readlines()]
+				
+monkey_data = {m[0]: {'room':m[2], 'station':m[1], 'dob':m[3]} for m in monkeys} 
+
+caloric_densities =[[s.strip() for s in l.split(',')] for l in open('X:\Documents\projects\PCRL_Logbook\\' + \
+			'pcrl_data_management\caloric_densities.csv').readlines()]
+				
+supplemental_feed_data = {f[1]: {'category':f[0], 'E_carb':f[2], 'E_prot':f[3], \
+		'E_fat':f[4], 'fraction_fiber':f[5], 'fraction_water':f[6]} for f in caloric_densities}
+		
+lab_member_data = {'admin': {'first':'PCRL', 'last':'admin', 'password':'PCRLBostonU'}}
 
 # init json data struct
 data = {'days': days, 'feeding_hour_threshold': feeding_hour_threshold, \
 		'report_dir': report_dir, 'data_dir': data_dir, \
-		'feeder_caloric_density': feeder_caloric_density, \
-		'dispense_amount': dispense_amount, \
-		'supp_feed_template': supp_feed_template, \
-		'report_custom': report_custom, \
-		'custom_dates': custom_dates, \
-		'station_schematic': station_schematic}
+		'feeders': feeders, 'report_custom': report_custom, \
+		'custom_dates': custom_dates, 'monkey_data': monkey_data, \
+		'supplemental_feed_data': supplemental_feed_data, \
+		'labmember_data': lab_member_data }
 
 # write to configuration file
-config_f = open('X:\Documents\projects\pcrl\pcrl_data_management\pcrl_data_management\config.json', 'w')
+config_f = open('X:\Documents\projects\PCRL_Logbook\pcrl_data_management\config.json', 'w')
 config_f.write(json.dumps(data, indent=2))
 config_f.close()
 
