@@ -16,6 +16,13 @@ namespace PCRLLogbook
         string labroom;
         LoginForm Login = new LoginForm();               
         LogData[] monksData = new LogData[8];    //array of data structs
+        SuppFood[] supp_foods = new SuppFood[] { 
+                    new SuppFood(), 
+                    new SuppFood(), 
+                    new SuppFood(), 
+                    new SuppFood(), 
+                    new SuppFood()
+                }; 
         LabroomForm Labroom = new LabroomForm();
         Dictionary<string, string[]> monkeys = new Dictionary<string, string[]>(); 
 
@@ -33,20 +40,13 @@ namespace PCRLLogbook
             checkinFillLabel.Text = this.labroom + ", " + DateTime.Now.ToShortTimeString()
                                                  +  " " + DateTime.Now.ToLongDateString();
 
-            // get all monkey data from db
-            SQLiteConnection m_dbConnection = new SQLiteConnection("DataSource=PCRL_phizer_study.db;Version=3");
-            m_dbConnection.Open();
-            string sql = "SELECT * FROM monkey";
-            SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
-            SQLiteDataReader reader = command.ExecuteReader();
-            while (reader.Read())
-                monkeys[reader["mid"].ToString()] = new string[2] {reader["station"].ToString(), reader["labroom"].ToString()}; 
-            m_dbConnection.Close();
+            // get monkey data from config 
+            Dictionary<string, Dictionary<string, string>> monkeys = Login.config.monkey_data;
 
             // get monkeys for this labroom
             var monks =
                 from monkey in monkeys
-                where monkey.Value[1].Equals(this.labroom)
+                where monkey.Value["room"].Equals(this.labroom)
                 select monkey;
 
             int index = 0;
@@ -55,7 +55,7 @@ namespace PCRLLogbook
 
             foreach (var m in monks)
             {
-                LogBox monkLogbox = new LogBox(m.Key, m.Value[0], this.labroom); 
+                LogBox monkLogbox = new LogBox(m.Key, m.Value["station"], this.labroom, supp_foods); 
                 
                 //add half to left, half to right 
                 if (index < half)

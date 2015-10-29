@@ -744,6 +744,7 @@ feeding_hour_threshold = 26
 
 data_dir = "X:\Data_Archive1"
 report_dir = "C:\Users\Server1\PCRL_Logbook\reports\\"
+db_dir = "C:\Users\Server1\PCRL_Logbook\\"
 
 report_custom = False 
 custom_dates = {"from": "10-10-2015", "to": "10-19-2015"}
@@ -766,7 +767,7 @@ lab_member_data = {'admin': {'first':'PCRL', 'last':'admin', 'password':'PCRLBos
 
 # init json data struct
 data = {'days': days, 'feeding_hour_threshold': feeding_hour_threshold, \
-		'report_dir': report_dir, 'data_dir': data_dir, \
+		'report_dir': report_dir, 'db_dir': db_dir, 'data_dir': data_dir, \
 		'feeders': feeders, 'report_custom': report_custom, \
 		'custom_dates': custom_dates, 'monkey_data': monkey_data, \
 		'supplemental_feed_data': supplemental_feed_data, \

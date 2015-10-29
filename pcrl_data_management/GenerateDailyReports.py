@@ -22,7 +22,10 @@ import string
 import sqlite3
 import datetime
 import itertools
+#import pythonmagick
 from numpy import *
+#from html import HTML
+#from xhtml2pdf import pisa
 
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -41,67 +44,84 @@ from matplotlib.ticker import LinearLocator, FixedLocator, FormatStrFormatter, \
 # PCRL_phizer_study.db (sqlite3) and builds and returns a dict data struct where
 # keys = monkeys, values = dicts(dates, lists(rows))
 def TableToDailyDict(table):
-
-	dict_ = {}
+	daily = {}
 
 	for row in table:
 		monkey = row[-1]
 		date = row[0].split(' ')[0]
 
-		if monkey not in dict_.keys():
-			dict_[monkey] = {date: [row]}
+		if monkey not in daily.keys():
+			daily[monkey] = {date: [row]}
 
 		else:
-			if date not in dict_[monkey].keys():
-				dict_[monkey][date] = [row]
+			if date not in daily[monkey].keys():
+				daily[monkey][date] = [row]
 			else:
-				dict_[monkey][date].append(row)
+				daily[monkey][date].append(row)
 
-	return dict_
+	return daily
 
 
 # takes a list of tuples, resulting from SELECT query of
 # PCRL_phizer_study.db (sqlite3) and builds and returns a dict data struct where
 # keys = monkeys, values = dicts(dates, dicts(hours, rows))
 def TableToHourlyDict(table):
-	dict_ = {}
+	hourly = {}
 
 	for row in table:
 		monkey = row[-1]
 		date = row[0].split(' ')[0]
 		hour = row[0].split(' ')[-1].split(':')[0]
 
-		if monkey not in dict_.keys():
-			dict_[monkey] = {date: {hour: [row]}}
+		if monkey not in hourly.keys():
+			hourly[monkey] = {date: {hour: [row]}}
 
 		else:
-			if date not in dict_[monkey].keys():
-				dict_[monkey][date] = {hour: [row]}
+			if date not in hourly[monkey].keys():
+				hourly[monkey][date] = {hour: [row]}
 			else:
-				if hour not in dict_[monkey][date].keys():
-					dict_[monkey][date][hour] = [row]
+				if hour not in hourly[monkey][date].keys():
+					hourly[monkey][date][hour] = [row]
 				else:
-					dict_[monkey][date][hour].append(row)
-	return dict_
+					hourly[monkey][date][hour].append(row)
+	return hourly
 
 
 # imports data for last n_days from each PCRL_phizer_study.db table
 # returns all tables in lists(tuples) format
 def ImportDataForLast(n_days):
-	db_path = '/Users/tfarrell/Code/pcrl/pcrl_data_management/' + \
-			  'pcrl_data_management/PCRL_phizer_study.db'
 	n_days += 2
 
 	Tables = {}
-	table_names = ['activity', 'cognitive', 'feeder', 'scale']
+	table_names = ['activity', 'cognitive', 'feeder', 'scale', 'observation']
 
-	conn = sqlite3.connect(db_path)
+	conn = sqlite3.connect(DB_PATH)
 
 	for table_name in table_names:
 		Tables[table_name] = conn.execute("SELECT * FROM " + table_name + \
 		" WHERE CAST(strftime('%s', date(date_time)) AS INTEGER) > " + \
 		"CAST(strftime('%s', date('now', 'start of day', '-"+ str(n_days) \
 		+" days')) AS INTEGER)").fetchall()
+
+	conn.close()
+
+	return Tables
+	
+	
+# imports data from each PCRL_phizer_study.db table
+# between the two input dates; returns all tables in lists(tuples) format
+def ImportData(from_, to):
+	Tables = {}
+	table_names = ['activity', 'cognitive', 'feeder', 'scale', 'observation']
+
+	conn = sqlite3.connect(DB_PATH)
+
+	for table_name in table_names:
+		Tables[table_name] = conn.execute("SELECT * FROM " + table_name + \
+		" WHERE CAST(strftime('%s', date(date_time)) AS INTEGER) > " + \
+			   "CAST(strftime('%s', date('" + from_ + "')) AS INTEGER) " + \
+		"AND CAST(strftime('%s', date(date_time)) AS INTEGER) < " + \
+			   "CAST(strftime('%s', date('" + to_ + "')) AS INTEGER) ").fetchall()
 
 	conn.close()
 
@@ -569,7 +589,7 @@ def CalcHourlyCognitiveStats(cognitive_monk_dict):
 ##	saves Average Activity, Feeding, Cognitive Test Success,
 ##	and Scale plots to "PCRL Group Report YYYYMMDD.pdf"
 ##
-def GenerateGroupReport(dispense_caloric_density):
+def GenerateGroupPlots(dispense_caloric_density):
 
 	pp = PdfPages(REPORT_DIR + 'PCRL Group Report ' + YESTERDAY_STR + '.pdf')
 
@@ -732,11 +752,11 @@ def GenerateGroupReport(dispense_caloric_density):
 
 			l1, = ax2.plot(feed_sums[monkey])
 			l2, = ax2.plot(avg_line)
-			l3, = ax2.plot([ ct * dispense_caloric_density['feeder_0'] for ct \
+			l3, = ax2.plot([ ct * dispense_caloric_density[0] for ct \
 							 in feeder_counts[monkey]['0']])
-			l4, = ax2.plot([ ct * dispense_caloric_density['feeder_1'] for ct \
+			l4, = ax2.plot([ ct * dispense_caloric_density[1] for ct \
 							 in feeder_counts[monkey]['1']])
-			l5, = ax2.plot([ ct * dispense_caloric_density['feeder_2'] for ct \
+			l5, = ax2.plot([ ct * dispense_caloric_density[2] for ct \
 							 in feeder_counts[monkey]['2']])
 
 			leg = plt.figlegend((l1,l2,l3,l4,l5),
@@ -815,7 +835,7 @@ def GenerateGroupReport(dispense_caloric_density):
 
 			ax3.set_xlabel('Day', fontsize=7)
 			# plot number of pellets monkey collected from cognitive test (feeder 2)
-			ax32.plot([ ct * dispense_caloric_density['feeder_2'] for ct \
+			ax32.plot([ ct * dispense_caloric_density[2] for ct \
 						in feeder_counts[monkey]['2']], 'm')
 			ax32.set_ylabel('Calories', fontsize=7, color='m')
 			plt.ylim(ymin=0, ymax=1.25*max(feeder_counts[monkey]['2']))
@@ -977,7 +997,7 @@ def GenerateGroupReport(dispense_caloric_density):
 ##	For each monkey, saves Hourly Activity, Hourly Feeding and
 ##	Cognitive Test Success plots to "PCRL Individual Report [MID] YYYYMMDD.pdf"
 ##
-def GenerateIndividualReports(feeding_hour_threshold):
+def GenerateIndividualPlots(feeding_hour_threshold):
 
 	# transform tables to dict, with granularity to hours
 	activity = TableToHourlyDict(TABLES['activity'])
@@ -1227,38 +1247,124 @@ def GenerateIndividualReports(feeding_hour_threshold):
 	return
 
 
+## 
+## 
+def GenerateReports(): 
+	# import observation data from tables
+	observation = TableToDailyDict(TABLES['observation'])
+	
+	# for each monkey
+	for monk in monkeys:
+		# convert individual plots from pdf to png
+		
+		
+		# generate full report (in HTML) 
+		mid = str(monk[0])
+		dob = str(monk[1])
+		sex = str(monk[2])
+
+		pg = HTML()
+
+		body = pg.body(style="font-family:Sans-Serif")
+
+		header = body.header()
+		header.h2(date_str + "REPORT for " + mid, style="text-align:center")
+		header.img(width="120", height="50", src="./bu_logo.jpg")
+
+		p = header.p(style="text-align:center;font-size:75%")
+		p.b.text("Primate Circadian Rhythm Laboratory"); p.br; 
+		p.text("Dept. of Anatomy and Neurobiology"); p.br; 
+		p.text("Boston University School of Medicine"); p.br; 
+		p.text("72 East Concord St (L 1004)"); p.br; 
+		p.text("Boston, Massachusetts 02118"); p.br; 
+		p.text("617-638-4200"); p.br; 
+		p.a("zhdanova@bu.edu", href="mailto:zhdanova@bu.edu")
+
+		table = body.section().table(style="margin-left:130px;", cellspacing="0", cellpadding="0")
+		rows = [("MID: " + mid, "Report No: " + str(0001)), \
+				("DOB: " + dob, "Sex: M"), \
+				("Compiled by: " + lab_member, "Datetime: " + datetime_str)]
+		for row in rows:
+			r = table.tr()
+			r.td(row[0])
+			r.td(row[1])
+
+		body.hr()
+
+		sec = body.section()
+		sec.h2("Observations:")
+		sec.p("...")
+
+		sec = body.section()
+		sec.h2("Data:")
+		sec.img(src="./data_for_" + mid + ".png", width="1000", height="600")
+
+		r = body.table.tr()
+		r.td("Electronically Signed By:")
+		r.td(lab_member)
+		r.td(datetime_str)
+
+		body.footer.h2("END REPORT", style="text-align:center")
+
+		#write HTML to pdf
+		f = open("test_report_" + mid +".pdf", "w+b")
+		pisa.showLogging()
+		pisa.CreatePDF(str(pg), dest=f)
+		f.close()
+	
+	
 #####################################################################
 # 								Main 								#
 #####################################################################
 
-#read options from config file
+base_dir = 'X:\Documents\projects\PCRL_Logbook\pcrl_data_management\\'
+
+# read options from config file
 opts = {}
-config_f = open('config.txt', 'r')
+config_f = open(base_dir + 'config.json', 'r')
 opts = json.load(config_f)
 config_f.close()
 
+MONKEYS = opts['monkey_data']
+STATIONS = [m['station'] for m in MONKEYS.values()]
+DB_PATH = opts['db_path']
 
-## GLOBALS
-STATIONS = map(str, range(401, 405) + range(501, 509) + range(601, 609) + \
-					range(801, 805))
-DATES = [(datetime.datetime.today() - datetime.timedelta(days=1)) - \
-		  datetime.timedelta(days=d) for d in range(opts['days'] + 1)]
-YESTERDAY_STR = DATES[0].strftime('%Y%m%d')
-DAYS_STR = DATES[-1].strftime('%b %d, %Y') + ' to ' + \
-		   DATES[0].strftime('%b %d, %Y')
-REPORT_DIR = opts['report_dir'] + YESTERDAY_STR + '/'
+# Import data based on configuration 
+TABLES = {};  DATES = []; YESTERDAY_STR = ''; 
+if opts['report_custom']: 
+	from_ = opts['custom_dates']['from']
+	to_ = opts['custom_dates']['to']
+	
+	TABLES = ImportData(from_, to_)
+	
+	days = (datetime.datetime.strptime(to_, '%m-%d-%Y') - datetime.datetime.strptime(from_, '%m-%d-%Y')).days 
+	DATES = [(datetime.datetime.strptime(to_, '%m-%d-%Y') - datetime.timedelta(days=d)) \
+			  for d in list(reversed(range(days + 1)))]
+	YESTERDAY_STR = DATES[0].strftime('%Y%m%d')
+	
+else: 
+	days = int(opts['days'])
+	
+	TABLES = ImportDataForLast(days)
+	
+	DATES = [(datetime.datetime.today() - datetime.timedelta(days=1)) - \
+		  datetime.timedelta(days=d) for d in list(reversed(range(days + 1)))]
+	YESTERDAY_STR = DATES[-1].strftime('%Y%m%d')
+	
 
-
-# setup directory to save reports to
+# setup directory for saving reports 
+DAYS_STR = DATES[0].strftime('%b_%d_%Y') + '-' + \
+		   DATES[-1].strftime('%b_%d_%Y')
+REPORT_DIR = opts['report_dir'] + DAYS_STR + '/'
 if not os.access(REPORT_DIR, os.F_OK):
 	os.mkdir(REPORT_DIR)
 
-
-# Import data
-TABLES = ImportDataForLast(opts['days'])
-
 # generate group summary plots
-GenerateGroupReport(opts['dispense_caloric_density'])
+GenerateGroupPlots([f['calories_per_dispense'] for f in opts['feeders'].values()])
 
 # generate individual summary plots
-GenerateIndividualReports(opts['feeding_hour_threshold'])
+GenerateIndividualPlots(opts['feeding_hour_threshold'])
+
+# generate full reports 
+#GenerateReports()
+

@@ -49,8 +49,9 @@ namespace PCRLLogbook
         CheckBox trainingCheck = new CheckBox();
         ComboBox trainingList = new ComboBox(); 
 
-        Label blood = new Label();
-        CheckBox bloodCheck = new CheckBox(); 
+        Label suppFeed = new Label();
+        BindingSource suppFeedObjs = new BindingSource();
+        DataGridView suppFeedTable = new DataGridView(); 
 
         Label equipment = new Label();
         CheckBox equipmentCheck = new CheckBox();
@@ -66,7 +67,7 @@ namespace PCRLLogbook
         /* Constructors */ 
         public LogBox() { }
 
-        public LogBox(string name, string station, string labroom)
+        public LogBox(string name, string station, string labroom, SuppFood[] supp_foods)
         {
             //general properties
             data = new LogData(name, station, labroom);     
@@ -75,26 +76,8 @@ namespace PCRLLogbook
             Text = station + "-" + name;
             BackColor = SystemColors.Control;
             Width = 340; 
-            Height = 280;
+            Height = 320;
             Margin = new Padding(8);
-
-            //report and comment buttons
-            report.Text = "Latest Report";                              
-            report.Location = new Point(110, label_y + (int)(8.5*label_dy) + 5);
-            report.Height = button_ht;
-            report.Width = button_width;
-            report.FlatStyle = FlatStyle.Standard;
-            report.Click += new System.EventHandler(report_Click);
-
-            comment.Text = "Comments:";
-            comment.Location = new Point(label_x, label_y + 6*label_dy + 16); 
-            comment.Height = label_ht;
-            comment.Width = label_width;
-            comment.FlatStyle = FlatStyle.Standard;
-            commentText.Location = new Point(check_x, label_y + 6 * label_dy + 16);
-            commentText.Width = 220;
-            commentText.Height = 50; 
-            //comment.Click += new System.EventHandler(comment_Click);
 
             //checkboxes with labels and lists
             behavior.Text = "Behavior:";
@@ -109,19 +92,6 @@ namespace PCRLLogbook
                                                       "pacing",
                                                       "self-injury",
                                                       "aggressive"});
-
-            training.Text = "Training:"; 
-            training.Height = label_ht; 
-            training.Width = label_width;
-            training.Location = new Point(label_x, label_y + 5 * label_dy + 16);
-            trainingCheck.Width = 20; 
-            trainingCheck.Location = new Point(check_x, check_y + 5 * label_dy + 16);
-            trainingCheck.CheckedChanged += new System.EventHandler(trainingCheck_Checked);
-            trainingList.Width = 190; 
-            trainingList.Location = new Point(list_x - 5, check_y + 5 * label_y + 24); 
-            trainingList.Items.AddRange(new object[] {"comfortable with reduced space", 
-                                                      "comfortable with touching", 
-                                                      "presenting leg"}); 
 
             stool.Text = "Stool:";
             stool.Height = label_ht;
@@ -138,21 +108,39 @@ namespace PCRLLogbook
                                                     "diarrhea", 
                                                     "no stool"});
 
-            blood.Text = "Blood:";
-            blood.Height = label_ht;
-            blood.Width = label_width;
-            blood.Location = new Point(label_x, label_y + 2*label_dy);
-            bloodCheck.Location = new Point(check_x, check_y + 2*label_dy);
-            bloodCheck.Width = 20;
-
+            suppFeed.Text = "Supplemental Feed:";
+            suppFeed.Height = label_ht;
+            suppFeed.Width = 130;
+            suppFeed.Location = new Point(label_x, label_y + 2*label_dy);
+            foreach (SuppFood sfObj in supp_foods) {
+                suppFeedObjs.Add(sfObj); 
+            }
+            // init supplemental food data table
+            suppFeedTable.AutoGenerateColumns = false;
+            suppFeedTable.Location = new Point(list_x, check_y + 2 * label_dy);
+            suppFeedTable.Size = new Size(180, 70);
+            suppFeedTable.ScrollBars = ScrollBars.Both; 
+            suppFeedTable.DataSource = suppFeedObjs; 
+            // add columns
+            DataGridViewColumn column = new DataGridViewTextBoxColumn();
+            column.DataPropertyName = "Name";
+            column.Name = "Name";
+            column.Width = 60; 
+            suppFeedTable.Columns.Add(column);
+            column = new DataGridViewTextBoxColumn();
+            column.DataPropertyName = "Amount";
+            column.Name = "Amt (g)";
+            column.Width = 60; 
+            suppFeedTable.Columns.Add(column);
+            
             equipment.Text = "Equipment:";
             equipment.Height = label_ht;
             equipment.Width = label_width;
-            equipment.Location = new Point(label_x, label_y + 3*label_dy);
-            equipmentCheck.Location = new Point(check_x, check_y + 3*label_dy);
+            equipment.Location = new Point(label_x, label_y + 5*label_dy);
+            equipmentCheck.Location = new Point(check_x, check_y + 5*label_dy);
             equipmentCheck.Width = 20; 
             equipmentCheck.CheckedChanged += new System.EventHandler(equipmentCheck_Checked);
-            equipCheckList.Location = new Point(list_x, check_y + 3*label_dy);
+            equipCheckList.Location = new Point(list_x, check_y + 5*label_dy);
             equipCheckList.Height = 66;
             equipCheckList.Width = 150; 
             equipCheckList.ScrollAlwaysVisible = true;
@@ -169,19 +157,49 @@ namespace PCRLLogbook
                                                         "lights/IR", 
                                                         "perstaltic pump"});
 
-            Controls.Add(report);
-            Controls.Add(comment);
-            Controls.Add(commentText); 
+            training.Text = "Training:";
+            training.Height = label_ht;
+            training.Width = label_width;
+            training.Location = new Point(label_x, label_y + 7*label_dy + 16);
+            trainingCheck.Width = 20;
+            trainingCheck.Location = new Point(check_x, check_y + 7*label_dy + 16);
+            trainingCheck.CheckedChanged += new System.EventHandler(trainingCheck_Checked);
+            trainingList.Width = 190;
+            trainingList.Location = new Point(list_x - 5, check_y + 7*label_y + 30);
+            trainingList.Items.AddRange(new object[] {"comfortable with reduced space", 
+                                                      "comfortable with touching", 
+                                                      "presenting leg"});
+
+            comment.Text = "Comments:";
+            comment.Location = new Point(label_x, label_y + 8*label_dy + 16);
+            comment.Height = label_ht;
+            comment.Width = label_width;
+            comment.FlatStyle = FlatStyle.Standard;
+            commentText.Location = new Point(check_x, label_y + 8*label_dy + 16);
+            commentText.Width = 220;
+            commentText.Height = 50;
+
+            //report button
+            /*report.Text = "Latest Report";
+            report.Location = new Point(110, label_y + (int)(9.5 * label_dy) + 5);
+            report.Height = button_ht;
+            report.Width = button_width;
+            report.FlatStyle = FlatStyle.Standard;
+            report.Click += new System.EventHandler(report_Click);*/
+           
             Controls.Add(behavior);
             Controls.Add(behaviorCheck);
             Controls.Add(stool);
             Controls.Add(stoolCheck);
-            Controls.Add(blood);
-            Controls.Add(bloodCheck);
+            Controls.Add(suppFeed);
+            Controls.Add(suppFeedTable);
             Controls.Add(equipment);
             Controls.Add(equipmentCheck);
             Controls.Add(training);
             Controls.Add(trainingCheck);
+            Controls.Add(comment);
+            Controls.Add(commentText); 
+            //Controls.Add(report);
         }
 
         /* Methods */ 
@@ -239,9 +257,6 @@ namespace PCRLLogbook
 
             if (stoolCheck.Checked && stoolList.SelectedItem != null)
                 data.stoolChecked(stoolList.SelectedItem.ToString());
-
-            if (bloodCheck.Checked)
-                data.bloodChecked();
 
             if (trainingCheck.Checked && trainingList.SelectedItem != null)
                 data.trainingChecked(trainingList.SelectedItem.ToString());

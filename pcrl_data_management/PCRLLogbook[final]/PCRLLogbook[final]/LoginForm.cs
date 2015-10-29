@@ -48,7 +48,7 @@ namespace PCRLLogbook
                 Console.WriteLine("The file could not be read:");
                 Console.WriteLine(e.Message);
             }
-            MessageBox.Show(json); 
+            //MessageBox.Show(json); 
             config = JsonConvert.DeserializeObject<Config>(json); 
         }
 
