@@ -1,156 +1,151 @@
 {
-  "report_dir": "X:\\Documents\\projects\\PCRL_Logbook\\pcrl_data_management\\test_reports\\", 
-  "labmember_data": {
-    "admin": {
-      "password": "PCRLBostonU", 
-      "last": "admin", 
-      "first": "PCRL"
-    }
-  }, 
-  "days": 10, 
-  "custom_dates": {
-    "to": "08-28-2015", 
-    "from": "08-24-2015"
-  }, 
-  "report_custom": true, 
-  "data_dir": "X:\\Data_Archive1", 
-  "feeding_hour_threshold": 26, 
   "monkey_data": {
     "JB67": {
       "dob": "", 
       "station": "606", 
-      "room": "W716"
+      "room": "W716", 
+      "sex": "M"
     }, 
     "29351": {
       "dob": "04/21/2010", 
       "station": "807", 
-      "room": "W718"
+      "room": "W718", 
+      "sex": "M"
     }, 
     "JB68": {
       "dob": "04/26/2010", 
       "station": "607", 
-      "room": "W716"
+      "room": "W716", 
+      "sex": "M"
     }, 
     "29319": {
       "dob": "03/05/2010", 
       "station": "605", 
-      "room": "W716"
+      "room": "W716", 
+      "sex": "M"
     }, 
     "29356": {
       "dob": "02/20/2010", 
       "station": "506", 
-      "room": "W715"
+      "room": "W715", 
+      "sex": "M"
     }, 
     "29132": {
       "dob": "05/24/2010", 
       "station": "604", 
-      "room": "W716"
+      "room": "W716", 
+      "sex": "M"
     }, 
     "28254": {
       "dob": "05/17/2009", 
       "station": "501", 
-      "room": "W715"
+      "room": "W715", 
+      "sex": "M"
     }, 
     "29447": {
       "dob": "03/18/2010", 
       "station": "508", 
-      "room": "W715"
+      "room": "W715", 
+      "sex": "M"
     }, 
     "28944": {
       "dob": "05/06/2010", 
       "station": "503", 
-      "room": "W715"
+      "room": "W715", 
+      "sex": "M"
     }, 
     "28212": {
       "dob": "05/18/2009", 
       "station": "601", 
-      "room": "W716"
+      "room": "W716", 
+      "sex": "M"
     }, 
     "28966": {
       "dob": "04/19/2010", 
       "station": "504", 
-      "room": "W715"
+      "room": "W715", 
+      "sex": "M"
     }, 
     "29360": {
       "dob": "04/06/2010", 
       "station": "507", 
-      "room": "W715"
+      "room": "W715", 
+      "sex": "M"
     }, 
     "29342": {
       "dob": "03/22/2010", 
       "station": "806", 
-      "room": "W718"
+      "room": "W718", 
+      "sex": "M"
     }, 
     "28988": {
       "dob": "03/22/2010", 
       "station": "804", 
-      "room": "W718"
+      "room": "W718", 
+      "sex": "M"
     }, 
     "28716": {
       "dob": "04/07/2009", 
       "station": "502", 
-      "room": "W715"
+      "room": "W715", 
+      "sex": "M"
     }, 
     "JG89": {
       "dob": "06/30/2010", 
       "station": "808", 
-      "room": "W718"
+      "room": "W718", 
+      "sex": "M"
     }, 
     "28987": {
       "dob": "03/22/2010", 
       "station": "803", 
-      "room": "W718"
+      "room": "W718", 
+      "sex": "M"
     }, 
     "28133": {
       "dob": "05/18/2009", 
       "station": "802", 
-      "room": "W718"
+      "room": "W718", 
+      "sex": "M"
     }, 
     "JG36": {
       "dob": "06/22/2010", 
       "station": "608", 
-      "room": "W716"
+      "room": "W716", 
+      "sex": "M"
     }, 
     "29065": {
       "dob": "05/10/2010", 
       "station": "805", 
-      "room": "W718"
+      "room": "W718", 
+      "sex": "M"
     }, 
     "29061": {
       "dob": "05/10/2010", 
       "station": "603", 
-      "room": "W716"
+      "room": "W716", 
+      "sex": "M"
     }, 
     "28977": {
       "dob": "01/26/2010", 
       "station": "602", 
-      "room": "W716"
+      "room": "W716", 
+      "sex": "M"
     }, 
     "27793": {
       "dob": "03/20/2009", 
       "station": "801", 
-      "room": "W718"
+      "room": "W718", 
+      "sex": "M"
     }, 
     "28973": {
       "dob": "04/19/2010", 
       "station": "505", 
-      "room": "W715"
+      "room": "W715", 
+      "sex": "M"
     }
   }, 
-  "feeders": {
-    "feeder0": {
-      "calories_per_dispense": 0.5, 
-      "dispense_amt": 10.0
-    }, 
-    "feeder1": {
-      "calories_per_dispense": 0.75, 
-      "dispense_amt": 10.0
-    }, 
-    "feeder2": {
-      "calories_per_dispense": 0.32, 
-      "dispense_amt": 13.0
-    }
-  }, 
+  "data_dir": "X:\\Data_Archive1", 
   "supplemental_feed_data": {
     "apple": {
       "category": "fruit", 
@@ -329,5 +324,32 @@
       "E_prot": "0.0640"
     }
   }, 
-  "db_path": "X:\\Documents\\projects\\PCRL_Logbook\\pcrl_data_management\\PCRL_phizer_study.db"
+  "custom_dates": {
+    "to": "10-19-2015", 
+    "from": "10-10-2015"
+  }, 
+  "report_custom": false, 
+  "feeding_hour_threshold": 26, 
+  "days": 10, 
+  "labmember_data": {
+    "admin": {
+      "password": "PCRLBostonU", 
+      "last": "admin", 
+      "first": "PCRL"
+    }
+  }, 
+  "feeders": {
+    "feeder0": {
+      "calories_per_dispense": 0.5, 
+      "dispense_amt": 10.0
+    }, 
+    "feeder1": {
+      "calories_per_dispense": 0.75, 
+      "dispense_amt": 10.0
+    }, 
+    "feeder2": {
+      "calories_per_dispense": 0.32, 
+      "dispense_amt": 13.0
+    }
+  }
 }

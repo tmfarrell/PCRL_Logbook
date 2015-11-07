@@ -30,7 +30,7 @@ namespace PCRLLogbook
             InitializeComponent();
 
             // init directory paths 
-            base_dir = "X:\\Documents\\projects\\PCRL_Logbook\\pcrl_data_management\\"; //ConfigurationSettings.AppSettings["BaseDirectory"];
+            base_dir = ConfigurationSettings.AppSettings["BaseDirectory"];
             db_dir = base_dir + "PCRL_phizer_study.db";
             config_path = base_dir + "config.json";
 

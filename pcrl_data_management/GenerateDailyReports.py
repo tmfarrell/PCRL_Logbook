@@ -127,6 +127,10 @@ def ImportData(from_, to):
 
 	return Tables
 
+	
+def observationToNiceString(obs_tuple): 
+	pass	# to implement 
+	
 
 # generates stats from cognitive dict for an individual monkey
 # returns cognitive_stats: keys=fields, values=lists(daily_stat)
@@ -1251,22 +1255,19 @@ def GenerateIndividualPlots(feeding_hour_threshold):
 ## 
 def GenerateReports(): 
 	# import observation data from tables
-	observation = TableToDailyDict(TABLES['observation'])
+	observations = TableToDailyDict(TABLES['observation'])
 	
 	# for each monkey
-	for monk in monkeys:
-		# convert individual plots from pdf to png
+	for monk, data in MONKEYS.items():
 		
 		
-		# generate full report (in HTML) 
-		mid = str(monk[0])
-		dob = str(monk[1])
-		sex = str(monk[2])
+		mid = monk
+		dob = data['dob']
+		sex = data['sex']
 
+		# generate observational report  in HTML 
 		pg = HTML()
-
 		body = pg.body(style="font-family:Sans-Serif")
-
 		header = body.header()
 		header.h2(date_str + "REPORT for " + mid, style="text-align:center")
 		header.img(width="120", height="50", src="./bu_logo.jpg")
@@ -1295,10 +1296,6 @@ def GenerateReports():
 		sec.h2("Observations:")
 		sec.p("...")
 
-		sec = body.section()
-		sec.h2("Data:")
-		sec.img(src="./data_for_" + mid + ".png", width="1000", height="600")
-
 		r = body.table.tr()
 		r.td("Electronically Signed By:")
 		r.td(lab_member)
@@ -1317,7 +1314,7 @@ def GenerateReports():
 # 								Main 								#
 #####################################################################
 
-base_dir = 'X:\Documents\projects\PCRL_Logbook\pcrl_data_management\\'
+base_dir = 'C:\\Users\\Server1\\Desktop\\PCRL_Logbook\\pcrl_data_management\\'
 
 # read options from config file
 opts = {}
@@ -1327,7 +1324,7 @@ config_f.close()
 
 MONKEYS = opts['monkey_data']
 STATIONS = [m['station'] for m in MONKEYS.values()]
-DB_PATH = opts['db_path']
+DB_PATH = base_dir + 'PCRL_phizer_study.db'
 
 # Import data based on configuration 
 TABLES = {};  DATES = []; YESTERDAY_STR = ''; 
@@ -1355,7 +1352,7 @@ else:
 # setup directory for saving reports 
 DAYS_STR = DATES[0].strftime('%b_%d_%Y') + '-' + \
 		   DATES[-1].strftime('%b_%d_%Y')
-REPORT_DIR = opts['report_dir'] + DAYS_STR + '/'
+REPORT_DIR = base_dir + '\\reports\\' + DAYS_STR + '\\'
 if not os.access(REPORT_DIR, os.F_OK):
 	os.mkdir(REPORT_DIR)
 
