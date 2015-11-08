@@ -22,7 +22,9 @@ namespace PCRLLogbook
         public string Comments;
         public bool EquipMalfunc;
         public bool StoolAbnormal;
-        public bool TrainingChecked;  
+        public bool TrainingChecked;
+        public bool SuppFed;
+        public SuppFood[] SuppFeed; 
 
         public LogData(string mid, string station, string labroom)
         {
@@ -40,10 +42,12 @@ namespace PCRLLogbook
             Equip = new string[11];
             Weight = 0; 
             Comments = "''";
+            SuppFed = false;
+            SuppFeed = null;
         }
         public bool notEmpty()
         {
-            return (Stool != "''" | Training != "''" | Comments != "''" | EquipMalfunc); 
+            return (!this.toString().Equals("")); 
         }
 
         public void behaviorChecked(string behavior)
@@ -71,20 +75,30 @@ namespace PCRLLogbook
             EquipMalfunc = true;
             Equip = equip;
         }
+        public void recordSuppFed(SuppFood[] suppfood) {
+            if (suppfood[0] != null)
+            {
+                SuppFed = true;
+                SuppFeed = suppfood;
+            } 
+        }
         public void weightChecked(double weight)
         {
             Weight = weight; 
         }
-        public void recordComment(string comments)
-        {
-            Comments = "'" + comments + "'";
-        }
 
         public string getEquip()
         {
-            string equip = "";
-            foreach (string e in Equip)
-                equip += e;
+            string equip = ""; string s; 
+            for (int i = 0; i < Equip.Length; i++)
+            {
+                s = Equip[i];
+                if (s != null && !s.Equals(""))
+                {
+                    if (i == 0) equip += s;
+                    else equip += ", " + s;
+                }
+            }
             return "'" + equip + "'"; 
         }
 
@@ -93,28 +107,55 @@ namespace PCRLLogbook
             string str = ""; 
 
             if (Misbehaved)
-                str += "Behavior: " + Behavior + "; ";
+                str += "Behavior: " + Behavior + ";\n";
 
             if (TrainingChecked)
-                str += "Training: " + Training + "; "; 
+                str += "Training: " + Training + ";\n"; 
 
             if (StoolAbnormal)
-                str += "Stool: " + Stool + "; ";
+                str += "Stool: " + Stool + ";\n";
             
             if (Blood)
-                str += "Blood: present; ";
+                str += "Blood: present;\n";
 
             if (Weight != 0)
-                str += "Weight: " + Weight.ToString() + "; "; 
+                str += "Weight: " + Weight.ToString() + ";\n"; 
 
             if (Comments != "")
-                str += "Comments: " + Comments + "; ";
+                str += "Comments: " + Comments + ";\n";
+
+            string s;
+            if (SuppFed)
+            {
+                str += "Supplemental Food: ";
+                for (int i = 0; i < SuppFeed.Length; i++)
+                {
+                    try
+                    {
+                        s = SuppFeed[i].toString();
+                        if (s != null && !s.Equals(""))
+                        {
+                            if (i == 0) str += s;
+                            else str += ", " + s;
+                        }
+                    }
+                    catch { } 
+                }
+                str += ";\n";
+            } 
 
             if (EquipMalfunc)
             {
                 str += "Equipment: ";
-                foreach (string e in Equip) 
-                    if(e != null) str += e + "; ";   
+                for (int i = 0; i < Equip.Length; i++)
+                {
+                    s = Equip[i]; 
+                    if (s != null && !s.Equals("")) {
+                        if (i == 0) str += s;
+                        else        str += ", " + s; 
+                    }
+                }
+                str += ";\n"; 
             }
                 
             return str;
@@ -125,15 +166,16 @@ namespace PCRLLogbook
             char[] delim = { ':', ';' };
             string[] strs = logDataStr.Split(delim);
 
-            string str = "";
-            foreach (string st in strs) 
-                str += st + " "; 
-            MessageBox.Show(str);
+            //string str = "";
+            //foreach (string st in strs) 
+              //  str += st + " "; 
+            //MessageBox.Show(str);
 
             string s; 
-            for (int i = 0; i < strs.Length; i++)
+            for (int i = 0; i < strs.Length; )
             {
-                s = Regex.Replace(strs[i++], @"\s+", ""); 
+                s = Regex.Replace(strs[i++], @"\n", "");
+                //MessageBox.Show(s); 
                 switch (s)
                 {
                     case "Behavior":
@@ -153,12 +195,32 @@ namespace PCRLLogbook
                         Comments = strs[i++];
                         break; 
                     case "Equipment":
+                        string[] es = strs[i++].Split(new char[] { ',' }); 
                         int j = 0; 
-                        while (i < strs.Length)
-                            Equip[j++] = strs[i++];
+                        while (j < es.Length)
+                            Equip[j] = es[j++];
+                        break;
+                    case "Supplemental Food":
+                        string[] sf = strs[i++].Split(new char[] {','});
+                        int k = 0; int l = 0; 
+                        string s_; string s__;
+                        //MessageBox.Show(sf.Length.ToString()); 
+                        while (k < sf.Length)
+                        {
+                            s_ = Regex.Replace(sf[k].Replace('(', ' '), @"\s+", "");
+                            s__ = Regex.Replace(sf[k + 1].Replace(')', ' '), @"\s+", ""); 
+                            SuppFeed[l++] = new SuppFood(s_, Convert.ToDouble(s__));
+                            //MessageBox.Show(SuppFeed[k].toString()); 
+                            //MessageBox.Show(s_ + s__); 
+                            k = k + 2; 
+                        } 
+                        break; 
+                    default:
+                        i++;
                         break; 
                 }
             }
+            //MessageBox.Show(this.toString()); 
         }
     }
 }

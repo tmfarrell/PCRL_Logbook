@@ -28,6 +28,11 @@ namespace PCRLLogbook
         {
             get { return amount; }
             set { amount = value; }
-        } 
+        }
+
+        public string toString()
+        {
+            return "(" + name + ", " + Convert.ToString(amount) + ")"; 
+        }
     }
 }

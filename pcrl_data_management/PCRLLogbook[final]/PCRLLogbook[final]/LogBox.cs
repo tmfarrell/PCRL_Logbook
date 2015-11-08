@@ -13,11 +13,6 @@ namespace PCRLLogbook
        * Logbox: basic UI unit for LogData struct.       
        */
 
-        /* TODO 
-         * - Add weight check box and list appear functionality. 
-         * - Add record supplemental feeding. 
-         * / 
-
         /* Positional + Dimensional Constants*/  
         const int label_ht = 16;
         const int label_width = 100;
@@ -67,7 +62,7 @@ namespace PCRLLogbook
         /* Constructors */ 
         public LogBox() { }
 
-        public LogBox(string name, string station, string labroom, SuppFood[] supp_foods)
+        public LogBox(string name, string station, string labroom, Config config)
         {
             //general properties
             data = new LogData(name, station, labroom);     
@@ -88,10 +83,7 @@ namespace PCRLLogbook
             behaviorCheck.Width = 20;
             behaviorCheck.CheckedChanged += new System.EventHandler(behaviorCheck_Checked);
             behaviorList.Location = new Point(list_x, check_y);
-            behaviorList.Items.AddRange(new object[] {"BAR",
-                                                      "pacing",
-                                                      "self-injury",
-                                                      "aggressive"});
+            behaviorList.Items.AddRange(config.behavior_list);
 
             stool.Text = "Stool:";
             stool.Height = label_ht;
@@ -100,21 +92,15 @@ namespace PCRLLogbook
             stoolCheck.Width = 20;
             stoolCheck.CheckedChanged += new System.EventHandler(stoolCheck_Checked);
             stoolList.Location = new Point(list_x, check_y + label_dy);
-            stoolList.Items.AddRange(new object[] {"normal",
-                                                   "pasty formed",
-                                                   "pasty", 
-                                                    "pasty soft", 
-                                                    "soft", 
-                                                    "diarrhea", 
-                                                    "no stool"});
+            stoolList.Items.AddRange(config.stool_list);
 
             suppFeed.Text = "Supplemental Feed:";
             suppFeed.Height = label_ht;
             suppFeed.Width = 130;
             suppFeed.Location = new Point(label_x, label_y + 2*label_dy);
-            foreach (SuppFood sfObj in supp_foods) {
-                suppFeedObjs.Add(sfObj); 
-            }
+            //foreach (SuppFood sfObj in supp_foods) {
+              //  suppFeedObjs.Add(sfObj); 
+            //}
             // init supplemental food data table
             suppFeedTable.AutoGenerateColumns = false;
             suppFeedTable.Location = new Point(list_x, check_y + 2 * label_dy);
@@ -145,17 +131,7 @@ namespace PCRLLogbook
             equipCheckList.Width = 150; 
             equipCheckList.ScrollAlwaysVisible = true;
             equipCheckList.CheckOnClick = true; 
-            equipCheckList.Items.AddRange(new object[] {"LIXIT",
-                                                       "feeders", 
-                                                       "fan",
-                                                       "computer", 
-                                                        "cables", 
-                                                        "front camera",
-                                                        "back camera",
-                                                        "top camera",
-                                                        "sensors", 
-                                                        "lights/IR", 
-                                                        "perstaltic pump"});
+            equipCheckList.Items.AddRange(config.equipment_list);
 
             training.Text = "Training:";
             training.Height = label_ht;
@@ -166,9 +142,7 @@ namespace PCRLLogbook
             trainingCheck.CheckedChanged += new System.EventHandler(trainingCheck_Checked);
             trainingList.Width = 190;
             trainingList.Location = new Point(list_x - 5, check_y + 7*label_y + 30);
-            trainingList.Items.AddRange(new object[] {"comfortable with reduced space", 
-                                                      "comfortable with touching", 
-                                                      "presenting leg"});
+            trainingList.Items.AddRange(config.training_list);
 
             comment.Text = "Comments:";
             comment.Location = new Point(label_x, label_y + 8*label_dy + 16);
@@ -243,11 +217,32 @@ namespace PCRLLogbook
                 Controls.Remove(trainingList); 
         }
 
-        //records comment to data struct
-        public void setComment(string str)
+        public void setSupppFeed()
         {
-            data.recordComment(str); 
-        } 
+            int num_foods = suppFeedTable.Rows.Count; 
+            SuppFood[] foods = new SuppFood[num_foods];
+
+            string s; 
+            for (int row = 0; row < num_foods; row++)
+            {
+                for (int col = 0; col < suppFeedTable.Rows[row].Cells.Count; col++)
+                {
+                    try
+                    {
+                        s = suppFeedTable.Rows[row].Cells[col].Value.ToString();
+                        if (col == 0 && !s.Equals(""))
+                        {
+                            foods[row] = new SuppFood();
+                            foods[row].Name = s;
+                        }
+                        if (col == 1 && !s.Equals(""))
+                            foods[row].Amount = Convert.ToDouble(s);
+                    }
+                    catch { }
+                } 
+            }
+            data.recordSuppFed(foods); 
+        }
 
         //returns data struct
         public LogData GetData()
@@ -270,8 +265,9 @@ namespace PCRLLogbook
                     equip[i++] = item.ToString();
                 } 
                 data.equipChecked(equip);
-            } 
+            }
 
+            setSupppFeed(); 
             data.Comments = commentText.Text.ToString(); 
             
             return data; 

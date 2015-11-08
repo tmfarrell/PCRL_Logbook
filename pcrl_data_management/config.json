@@ -1,4 +1,50 @@
 {
+  "behavior_list": [
+    "BAR", 
+    "pacing", 
+    "self-injury", 
+    "aggressive"
+  ], 
+  "labmember_data": {
+    "admin": {
+      "password": "PCRLBostonU", 
+      "last": "admin", 
+      "first": "PCRL"
+    }
+  }, 
+  "days": 10, 
+  "equipment_list": [
+    "LIXIT", 
+    "feeder0", 
+    "feeder1", 
+    "feeder2", 
+    "fan", 
+    "computer", 
+    "cables", 
+    "front camera", 
+    "back camera", 
+    "top camera", 
+    "sensors", 
+    "lights/IR", 
+    "peristaltic pump"
+  ], 
+  "custom_dates": {
+    "to": "10-19-2015", 
+    "from": "10-10-2015"
+  }, 
+  "report_custom": false, 
+  "data_dir": "X:\\Data_Archive1", 
+  "stool_list": [
+    "normal", 
+    "pasty formed", 
+    "pasty", 
+    "pasty", 
+    "pasty soft", 
+    "soft", 
+    "diarrhea", 
+    "no stool"
+  ], 
+  "feeding_hour_threshold": 26, 
   "monkey_data": {
     "JB67": {
       "dob": "", 
@@ -145,7 +191,20 @@
       "sex": "M"
     }
   }, 
-  "data_dir": "X:\\Data_Archive1", 
+  "feeders": {
+    "feeder0": {
+      "calories_per_dispense": 0.5, 
+      "dispense_amt": 10.0
+    }, 
+    "feeder1": {
+      "calories_per_dispense": 0.75, 
+      "dispense_amt": 10.0
+    }, 
+    "feeder2": {
+      "calories_per_dispense": 0.32, 
+      "dispense_amt": 13.0
+    }
+  }, 
   "supplemental_feed_data": {
     "apple": {
       "category": "fruit", 
@@ -324,32 +383,9 @@
       "E_prot": "0.0640"
     }
   }, 
-  "custom_dates": {
-    "to": "10-19-2015", 
-    "from": "10-10-2015"
-  }, 
-  "report_custom": false, 
-  "feeding_hour_threshold": 26, 
-  "days": 10, 
-  "labmember_data": {
-    "admin": {
-      "password": "PCRLBostonU", 
-      "last": "admin", 
-      "first": "PCRL"
-    }
-  }, 
-  "feeders": {
-    "feeder0": {
-      "calories_per_dispense": 0.5, 
-      "dispense_amt": 10.0
-    }, 
-    "feeder1": {
-      "calories_per_dispense": 0.75, 
-      "dispense_amt": 10.0
-    }, 
-    "feeder2": {
-      "calories_per_dispense": 0.32, 
-      "dispense_amt": 13.0
-    }
-  }
+  "training_list": [
+    "comfortable w/ reduced space", 
+    "comfortable w/ touching", 
+    "presenting leg"
+  ]
 }

@@ -94,7 +94,6 @@ X:\Documents\projects\PCRL_Logbook\pcrl_data_management\PCRLLogbook[final]\PCRLL
 X:\Documents\projects\PCRL_Logbook\pcrl_data_management\PCRLLogbook[final]\PCRLLogbook[final]\bin\Release\Newtonsoft.Json.xml
 X:\Documents\projects\PCRL_Logbook\pcrl_data_management\PCRLLogbook[final]\PCRLLogbook[final]\bin\Release\System.Data.SQLite.xml
 X:\Documents\projects\PCRL_Logbook\pcrl_data_management\PCRLLogbook[final]\PCRLLogbook[final]\obj\Release\PCRLLogbook.csprojResolveAssemblyReference.cache
-X:\Documents\projects\PCRL_Logbook\pcrl_data_management\PCRLLogbook[final]\PCRLLogbook[final]\obj\Release\PCRLLogbook.Comment.resources
 X:\Documents\projects\PCRL_Logbook\pcrl_data_management\PCRLLogbook[final]\PCRLLogbook[final]\obj\Release\PCRLLogbook.CreateAccountForm.resources
 X:\Documents\projects\PCRL_Logbook\pcrl_data_management\PCRLLogbook[final]\PCRLLogbook[final]\obj\Release\PCRLLogbook.LabroomForm.resources
 X:\Documents\projects\PCRL_Logbook\pcrl_data_management\PCRLLogbook[final]\PCRLLogbook[final]\obj\Release\PCRLLogbook.LogForm.resources

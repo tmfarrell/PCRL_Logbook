@@ -37,12 +37,20 @@ supplemental_feed_data = {f[1]: {'category':f[0], 'E_carb':f[2], 'E_prot':f[3], 
 		
 lab_member_data = {'admin': {'first':'PCRL', 'last':'admin', 'password':'PCRLBostonU'}}
 
+behavior_list = ["BAR","pacing","self-injury","aggressive"]
+stool_list = ['normal','pasty formed','pasty','pasty','pasty soft','soft','diarrhea','no stool']
+equipment_list = ['LIXIT','feeder0','feeder1','feeder2','fan','computer','cables','front camera',\
+				  'back camera','top camera','sensors','lights/IR','peristaltic pump']
+training_list = ['comfortable w/ reduced space', 'comfortable w/ touching', 'presenting leg']
+
 # init json data struct
 data = {'days': days, 'feeding_hour_threshold': feeding_hour_threshold, \
 		'data_dir': data_dir, 'feeders': feeders, 'report_custom': report_custom, \
 		'custom_dates': custom_dates, 'monkey_data': monkey_data, \
-		'supplemental_feed_data': supplemental_feed_data, \
-		'labmember_data': lab_member_data }
+		'supplemental_feed_data': supplemental_feed_data,\
+		'labmember_data': lab_member_data,'behavior_list': behavior_list,\
+		'stool_list': stool_list, 'equipment_list': equipment_list,\
+		'training_list': training_list}
 
 # write to configuration file
 config_f = open('X:\Documents\projects\PCRL_Logbook\pcrl_data_management\config.json', 'w')

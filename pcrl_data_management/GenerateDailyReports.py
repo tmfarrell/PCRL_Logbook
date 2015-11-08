@@ -22,11 +22,9 @@ import string
 import sqlite3
 import datetime
 import itertools
-#import pythonmagick
-from numpy import *
-#from html import HTML
-#from xhtml2pdf import pisa
+#from numpy import *
 
+'''
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import matplotlib.collections as collections
@@ -34,6 +32,14 @@ from matplotlib.font_manager import FontProperties
 from matplotlib.backends.backend_pdf import PdfPages
 from matplotlib.ticker import LinearLocator, FixedLocator, FormatStrFormatter, \
 							  OldScalarFormatter, MultipleLocator, MaxNLocator
+'''
+
+
+base_dir = 'X:\Documents\projects\PCRL_Logbook\pcrl_data_management\\' 
+#C:\\Users\\Server1\\Desktop\\PCRL_Logbook\\pcrl_data_management\\'
+
+sys.path.append(base_dir + 'libs\PyPDF2-master')
+import PyPDF2
 
 
 #############################################################
@@ -1259,8 +1265,6 @@ def GenerateReports():
 	
 	# for each monkey
 	for monk, data in MONKEYS.items():
-		
-		
 		mid = monk
 		dob = data['dob']
 		sex = data['sex']
@@ -1304,18 +1308,25 @@ def GenerateReports():
 		body.footer.h2("END REPORT", style="text-align:center")
 
 		#write HTML to pdf
-		f = open("test_report_" + mid +".pdf", "w+b")
+		input1 = open(REPORT_DIR + mid +"-observational.pdf", "w+r+b")
 		pisa.showLogging()
-		pisa.CreatePDF(str(pg), dest=f)
-		f.close()
+		pisa.CreatePDF(str(pg), dest=input1)
+		
+		input2 = open(REPORT_DIR + 'PCRL ' + monk + \
+			  ' Report ' + YESTERDAY_STR + '.pdf', "rb")
+		
+		merger = PdfFileMerger()
+		merger.append(input1)
+		merger.append(input2)
+		output = open(REPORT_DIR + 'PCRL ' + monk + \
+			  ' Report ' + YESTERDAY_STR + '.pdf', "wb")
+		merger.write(output)
 	
 	
 #####################################################################
 # 								Main 								#
 #####################################################################
-
-base_dir = 'C:\\Users\\Server1\\Desktop\\PCRL_Logbook\\pcrl_data_management\\'
-
+'''
 # read options from config file
 opts = {}
 config_f = open(base_dir + 'config.json', 'r')
@@ -1365,3 +1376,4 @@ GenerateIndividualPlots(opts['feeding_hour_threshold'])
 # generate full reports 
 #GenerateReports()
 
+'''

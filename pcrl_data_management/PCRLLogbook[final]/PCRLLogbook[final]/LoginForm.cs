@@ -90,5 +90,18 @@ namespace PCRLLogbook
             Hide();
             createAcct.Show(); 
         }
+
+        private void generateReports_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process process = new System.Diagnostics.Process();
+            System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
+            startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
+            startInfo.FileName = "C:\\Python27\\python.exe";
+            startInfo.Arguments = base_dir + "GenerateDailyReports.py";
+            startInfo.UseShellExecute = false;
+            startInfo.RedirectStandardOutput = true;
+            process.StartInfo = startInfo;
+            process.Start();
+        }
     }
 }

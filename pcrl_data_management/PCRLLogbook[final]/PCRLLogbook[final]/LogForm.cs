@@ -39,7 +39,6 @@ namespace PCRLLogbook
             labmemberFillLabel.Text = Login.name[0] + " " + Login.name[1];
             checkinFillLabel.Text = this.labroom + ", " + DateTime.Now.ToShortTimeString()
                                                  +  " " + DateTime.Now.ToLongDateString();
-
             // get monkey data from config 
             Dictionary<string, Dictionary<string, string>> monkeys = Login.config.monkey_data;
 
@@ -51,19 +50,19 @@ namespace PCRLLogbook
 
             int index = 0;
             numMonks = monks.ToArray().Length;
-            int half = numMonks / 2; 
+            int half = numMonks / 2;
 
             foreach (var m in monks)
             {
-                LogBox monkLogbox = new LogBox(m.Key, m.Value["station"], this.labroom, supp_foods); 
-                
+                LogBox monkLogbox = new LogBox(m.Key, m.Value["station"], this.labroom, Login.config);
+
                 //add half to left, half to right 
                 if (index < half)
                     this.leftLayoutPanel.Controls.Add(monkLogbox);
                 else
                     this.rightLayoutPanel.Controls.Add(monkLogbox);
                 index++;
-            }
+            } 
         }
 
         //returns array of data structs
@@ -91,12 +90,24 @@ namespace PCRLLogbook
 
         private void saveCheckoutButton_Click(object sender, EventArgs e)
         {
-            saveData();
-            //printData();  
-            Labroom.setCheckOutTime(DateTime.Now, labroom);
-            Labroom.storeData(labroom, monksData); 
-            Labroom.Show();                                 
-            Close(); 
+            DialogResult result = MessageBox.Show(
+                "Are you sure you want to go save and checkout?\n" +
+                "Once checked out, you will need to use the review-and-save form\n" + 
+                "to change this recorded data.",
+                "Warning", MessageBoxButtons.YesNo);
+            if (result == DialogResult.Yes)
+            {
+                saveData();
+                //printData();  
+                Labroom.setCheckOutTime(DateTime.Now, labroom);
+                Labroom.storeData(labroom, monksData);
+                Labroom.Show();
+                Close(); 
+            }
+            else
+            {
+                return;
+            } 
         }
 
         private void saveData()
@@ -109,6 +120,8 @@ namespace PCRLLogbook
 
             foreach (LogBox logBox in this.rightLayoutPanel.Controls)
                 monksData[index++] = logBox.GetData();
+
+            Labroom.dataRecorded(labroom); 
         } 
 
         private void saveButton_Click(object sender, EventArgs e)
