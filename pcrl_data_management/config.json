@@ -33,6 +33,16 @@
     "from": "10-10-2015"
   }, 
   "report_custom": false, 
+  "supplemental_feed_templates": {
+    "apples and bananas": {
+      "apple": 5.0, 
+      "banana": 3.0
+    }, 
+    "after lunch snack(kiwis + mangos)": {
+      "kiwi": 3.0, 
+      "mango": 4.0
+    }
+  }, 
   "data_dir": "X:\\Data_Archive1", 
   "stool_list": [
     "normal", 

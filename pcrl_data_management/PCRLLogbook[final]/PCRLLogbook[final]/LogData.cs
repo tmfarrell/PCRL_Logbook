@@ -24,7 +24,7 @@ namespace PCRLLogbook
         public bool StoolAbnormal;
         public bool TrainingChecked;
         public bool SuppFed;
-        public SuppFood[] SuppFeed; 
+        public string SuppFeedTemplate; 
 
         public LogData(string mid, string station, string labroom)
         {
@@ -43,7 +43,7 @@ namespace PCRLLogbook
             Weight = 0; 
             Comments = "''";
             SuppFed = false;
-            SuppFeed = null;
+            SuppFeedTemplate = "";
         }
         public bool notEmpty()
         {
@@ -75,11 +75,11 @@ namespace PCRLLogbook
             EquipMalfunc = true;
             Equip = equip;
         }
-        public void recordSuppFed(SuppFood[] suppfood) {
+        public void recordSuppFed(string suppfood) {
             if (suppfood[0] != null)
             {
                 SuppFed = true;
-                SuppFeed = suppfood;
+                SuppFeedTemplate = suppfood;
             } 
         }
         public void weightChecked(double weight)
@@ -127,8 +127,8 @@ namespace PCRLLogbook
             string s;
             if (SuppFed)
             {
-                str += "Supplemental Food: ";
-                for (int i = 0; i < SuppFeed.Length; i++)
+                str += "Supplemental Food Template: " + SuppFeedTemplate;
+                /*for (int i = 0; i < SuppFeed.Length; i++)
                 {
                     try
                     {
@@ -140,7 +140,7 @@ namespace PCRLLogbook
                         }
                     }
                     catch { } 
-                }
+                }*/ 
                 str += ";\n";
             } 
 
@@ -200,8 +200,9 @@ namespace PCRLLogbook
                         while (j < es.Length)
                             Equip[j] = es[j++];
                         break;
-                    case "Supplemental Food":
-                        string[] sf = strs[i++].Split(new char[] {','});
+                    case "Supplemental Food Template":
+                        SuppFeedTemplate = strs[i++]; 
+                        /*string[] sf = strs[i++].Split(new char[] {','});
                         int k = 0; int l = 0; 
                         string s_; string s__;
                         //MessageBox.Show(sf.Length.ToString()); 
@@ -213,7 +214,7 @@ namespace PCRLLogbook
                             //MessageBox.Show(SuppFeed[k].toString()); 
                             //MessageBox.Show(s_ + s__); 
                             k = k + 2; 
-                        } 
+                        } */ 
                         break; 
                     default:
                         i++;

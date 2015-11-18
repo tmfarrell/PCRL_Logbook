@@ -45,8 +45,9 @@ namespace PCRLLogbook
         ComboBox trainingList = new ComboBox(); 
 
         Label suppFeed = new Label();
-        BindingSource suppFeedObjs = new BindingSource();
-        DataGridView suppFeedTable = new DataGridView(); 
+        //BindingSource suppFeedObjs = new BindingSource();
+        //DataGridView suppFeedTable = new DataGridView();
+        ComboBox suppFeedList = new ComboBox(); 
 
         Label equipment = new Label();
         CheckBox equipmentCheck = new CheckBox();
@@ -83,6 +84,7 @@ namespace PCRLLogbook
             behaviorCheck.Width = 20;
             behaviorCheck.CheckedChanged += new System.EventHandler(behaviorCheck_Checked);
             behaviorList.Location = new Point(list_x, check_y);
+            behaviorList.Width = 190; 
             behaviorList.Items.AddRange(config.behavior_list);
 
             stool.Text = "Stool:";
@@ -92,17 +94,22 @@ namespace PCRLLogbook
             stoolCheck.Width = 20;
             stoolCheck.CheckedChanged += new System.EventHandler(stoolCheck_Checked);
             stoolList.Location = new Point(list_x, check_y + label_dy);
+            stoolList.Width = 190; 
             stoolList.Items.AddRange(config.stool_list);
 
             suppFeed.Text = "Supplemental Feed:";
             suppFeed.Height = label_ht;
             suppFeed.Width = 130;
-            suppFeed.Location = new Point(label_x, label_y + 2*label_dy);
+            suppFeed.Location = new Point(label_x, label_y + 2 * label_dy);
+            suppFeedList.Location = new Point(list_x, check_y + 2 * label_dy);
+            suppFeedList.Height = 66;
+            suppFeedList.Width = 190;
+            suppFeedList.Items.AddRange(config.supplemental_feed_templates.Keys.ToArray<string>());
             //foreach (SuppFood sfObj in supp_foods) {
               //  suppFeedObjs.Add(sfObj); 
             //}
             // init supplemental food data table
-            suppFeedTable.AutoGenerateColumns = false;
+            /*suppFeedTable.AutoGenerateColumns = false;
             suppFeedTable.Location = new Point(list_x, check_y + 2 * label_dy);
             suppFeedTable.Size = new Size(180, 70);
             suppFeedTable.ScrollBars = ScrollBars.Both; 
@@ -117,7 +124,7 @@ namespace PCRLLogbook
             column.DataPropertyName = "Amount";
             column.Name = "Amt (g)";
             column.Width = 60; 
-            suppFeedTable.Columns.Add(column);
+            suppFeedTable.Columns.Add(column);*/ 
             
             equipment.Text = "Equipment:";
             equipment.Height = label_ht;
@@ -128,7 +135,7 @@ namespace PCRLLogbook
             equipmentCheck.CheckedChanged += new System.EventHandler(equipmentCheck_Checked);
             equipCheckList.Location = new Point(list_x, check_y + 5*label_dy);
             equipCheckList.Height = 66;
-            equipCheckList.Width = 150; 
+            equipCheckList.Width = 190; 
             equipCheckList.ScrollAlwaysVisible = true;
             equipCheckList.CheckOnClick = true; 
             equipCheckList.Items.AddRange(config.equipment_list);
@@ -166,7 +173,7 @@ namespace PCRLLogbook
             Controls.Add(stool);
             Controls.Add(stoolCheck);
             Controls.Add(suppFeed);
-            Controls.Add(suppFeedTable);
+            Controls.Add(suppFeedList);
             Controls.Add(equipment);
             Controls.Add(equipmentCheck);
             Controls.Add(training);
@@ -217,7 +224,7 @@ namespace PCRLLogbook
                 Controls.Remove(trainingList); 
         }
 
-        public void setSupppFeed()
+        /*public void setSupppFeed()
         {
             int num_foods = suppFeedTable.Rows.Count; 
             SuppFood[] foods = new SuppFood[num_foods];
@@ -242,7 +249,7 @@ namespace PCRLLogbook
                 } 
             }
             data.recordSuppFed(foods); 
-        }
+        }*/ 
 
         //returns data struct
         public LogData GetData()
@@ -267,7 +274,8 @@ namespace PCRLLogbook
                 data.equipChecked(equip);
             }
 
-            setSupppFeed(); 
+            if (suppFeedList.SelectedItem != null) 
+                data.recordSuppFed(suppFeedList.SelectedItem.ToString()); 
             data.Comments = commentText.Text.ToString(); 
             
             return data; 

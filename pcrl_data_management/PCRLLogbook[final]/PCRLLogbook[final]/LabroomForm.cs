@@ -182,16 +182,13 @@ namespace PCRLLogbook
                         // record supplemental feed 
                         if (log.SuppFed)
                         {
-                            foreach (SuppFood sf in log.SuppFeed)
+                            foreach (KeyValuePair<string, double> sf in Login.config.supplemental_feed_templates[log.SuppFeedTemplate])
                             {
-                                if (sf != null)
-                                {
-                                    sql = "INSERT INTO supp_feed(date_time, labmember, name, amount, mid) " +
-                                        "VALUES ('" + DateTime.Now.ToString() + "', '" + labMember + "', '" +
-                                        sf.Name + "', " + Convert.ToString(sf.Amount) + ", '" + log.Mid + "')";
-                                    command = new SQLiteCommand(sql, m_dbConnection);
-                                    command.ExecuteNonQuery();
-                                }
+                                sql = "INSERT INTO supp_feed(date_time, labmember, name, amount, mid) " +
+                                      "VALUES ('" + DateTime.Now.ToString() + "', '" + labMember + "', '" +
+                                      sf.Key + "', " + Convert.ToString(sf.Value) + ", '" + log.Mid + "')";
+                                command = new SQLiteCommand(sql, m_dbConnection);
+                                command.ExecuteNonQuery(); 
                             }
                         }  
                     }

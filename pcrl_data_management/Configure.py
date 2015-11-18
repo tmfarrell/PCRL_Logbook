@@ -34,6 +34,9 @@ caloric_densities =[[s.strip() for s in l.split(',')] for l in open('X:\Document
 				
 supplemental_feed_data = {f[1]: {'category':f[0], 'E_carb':f[2], 'E_prot':f[3], \
 		'E_fat':f[4], 'fraction_fiber':f[5], 'fraction_water':f[6]} for f in caloric_densities}
+
+supplemental_feed_templates = {'apples and bananas': {'apple': 5.0, 'banana': 3.0}, \
+								'after lunch snack(kiwis + mangos)': {'kiwi': 3.0, 'mango': 4.0}}
 		
 lab_member_data = {'admin': {'first':'PCRL', 'last':'admin', 'password':'PCRLBostonU'}}
 
@@ -50,7 +53,8 @@ data = {'days': days, 'feeding_hour_threshold': feeding_hour_threshold, \
 		'supplemental_feed_data': supplemental_feed_data,\
 		'labmember_data': lab_member_data,'behavior_list': behavior_list,\
 		'stool_list': stool_list, 'equipment_list': equipment_list,\
-		'training_list': training_list}
+		'training_list': training_list, \
+		'supplemental_feed_templates': supplemental_feed_templates}
 
 # write to configuration file
 config_f = open('X:\Documents\projects\PCRL_Logbook\pcrl_data_management\config.json', 'w')

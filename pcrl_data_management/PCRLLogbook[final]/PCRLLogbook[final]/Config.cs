@@ -22,6 +22,7 @@ namespace PCRLLogbook
       
         public Dictionary<string, Dictionary<string, double>> feeders { get; set; }
         public Dictionary<string, Dictionary<string, string>> supplemental_feed_data { get; set; }
+        public Dictionary<string, Dictionary<string, double>> supplemental_feed_templates { get; set; }
         public Dictionary<string, Dictionary<string, string>> monkey_data { get; set; }
         public Dictionary<string, Dictionary<string, string>> labmember_data { get; set; }
 
