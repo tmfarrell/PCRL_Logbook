@@ -24,7 +24,6 @@ import datetime
 import itertools
 #from numpy import *
 
-'''
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import matplotlib.collections as collections
@@ -32,7 +31,6 @@ from matplotlib.font_manager import FontProperties
 from matplotlib.backends.backend_pdf import PdfPages
 from matplotlib.ticker import LinearLocator, FixedLocator, FormatStrFormatter, \
 							  OldScalarFormatter, MultipleLocator, MaxNLocator
-'''
 
 
 base_dir = 'X:\Documents\projects\PCRL_Logbook\pcrl_data_management\\'
