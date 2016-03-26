@@ -7,8 +7,7 @@
 	C. Software 
 	D. Configuration
 	E. Database 
-	F. Working with the Database 
-	G. Contact 
+	F. Contact 
 
 
 
@@ -136,7 +135,72 @@ The system has three components, whose functions correspond to those outlined in
 
 		File: "PCRL_Logbook\scripts\GenerateDailyReports.py"
 
-	[Description here.]
+	This script gets data from the database and generates reports for the period specified in the config file. It is organized as follows
+		
+		## Functions
+		def TableToDailyDict(table): ... 
+		# converts data table (list of tuples) to a dictionary organized by day
+
+		def TableToHourlyDict(table): ...
+		# converts data table to a dictionary organized by hour within day
+
+		def ImportDataForLast(n_days): ...
+		# imports data from db for the last n_days
+
+		def ImportData(from_, to_): ...
+		# imports data from date from_ to date to_, as specified in config file
+
+		def CalcDailyCognitiveStats(cognitive_monk_dict): ...
+		# takes 'daily' dictionary made from cognitive data table and computes daily 
+		# cognitive test statistics. the computations were copied directly from Eric's 
+		# program, and could use updating/ cleaning up 
+
+		def CalcHourlyCognitiveStats(cognitive_monk_dict): ...
+		# save as above except takes 'hourly' dictionary and computes hourly statistics
+		# again could use updating and maybe even merging with the above function into 
+		# a more general function that takes a flag
+
+		## Main 
+		# gets config opts
+		# gets data
+
+		
+		## Generate group plots
+		# open group plots .pdf object 
+		# computes daily stats for each data table for each monkey 
+		# plots activity for each monkey, and adds to .pdf object 
+		# 		feeding 
+		# 		scale
+		# 		cognitive
+
+		## Generate individual plots
+		# computes hourly stats for each data table for each monkey
+		# for each monkey 
+		# 	open .pdf object 
+		# 	plot graphs with data over the whole report perio; add to pdf
+		# 	plot graphs just for yesterday's data; add to pdf 
+
+		## Finish the reports
+		# generate the front page summaries with HTML
+		# convert HTML to PDF
+		# merge summary PDF with report PDF
+		# save report 
+		
+
+	If this scripts need to be debugged, edited or you just want to test its behavior after making a change, open `Windows Powershell` and do the following: 
+	
+		C:\Users\Server1> cd .\Desktop\PCRL_Logbook\scripts
+		C:\Users\Server1\Desktop\PCRL_Logbook\scripts> C:\Python27\python.exe
+		Python 2.7.8 (default, Jun 30, 2014, 16:03:49) [MSC v.1500 32 bit (Intel)] on win32
+		Type "help", "copyright", "credits" or "license" for more information. 
+		>>> exec(open('GenerateDailyReports.py').read())
+		>>> print TABLES.keys()
+		['scale', 'observation', 'suppfeed', 'feeder', 'activity', 'cognitive'] 
+		>>>
+	
+	This will allow you to work with the objects/data interactively and debug more easily.  
+
+		
 
 	
   
@@ -324,7 +388,7 @@ Although `SqliteBrowser` is very convenient and a nice interface to test queries
 	See documentation [here](https://docs.python.org/2/library/sqlite3.html).  
 
 
-### G. CONTACT 
+### F. CONTACT 
 With any errors/ bugs/ questions, feel free to contact <tfarrell01@gmail.com>. 
 
  

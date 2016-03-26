@@ -599,7 +599,7 @@ def CalcHourlyCognitiveStats(cognitive_monk_dict):
 # 								Main 								#
 #####################################################################
 
-# Read options from config file
+## Read options from config file
 opts = {}
 config_f = open(base_dir + 'config.json', 'r')
 opts = json.load(config_f)
@@ -611,7 +611,7 @@ STATION_MONKEYS = zip(STATIONS, MONKEYS)
 STATION_MONKEYS.sort()
 DB_PATH = opts['db_file']
 
-# Import data based on configuration
+## Import data based on config
 TABLES = {};  DATES = []; YESTERDAY_STR = '';
 if opts['report_custom']:
 	from_ = opts['custom_dates']['from']
@@ -632,7 +632,7 @@ else:
 				for d in list(reversed(range(days + 1)))]
 	YESTERDAY_STR = DATES[-1].strftime('%Y%m%d')
 
-# Setup directory for saving reports
+## Setup directory for saving reports
 DAYS_STR = DATES[0].strftime('%b_%d_%Y') + '-' + \
 		   DATES[-1].strftime('%b_%d_%Y')
 REPORT_DIR = opts['report_dir'] + DAYS_STR + '\\'
@@ -666,6 +666,7 @@ supp_feed = TableToDailyDict(TABLES['suppfeed'])
 activity_avg, activity_std, feeder_counts, feed_sums = {}, {}, {}, {}
 activity_norm, supp_feed_sums, supp_feed_cts = {}, {}, {} 
 scale_avg, scale_std, cognitive_stats = {}, {}, {}
+feed_sums0, feed_sums1, feed_sums2 = {}, {}, {} 
  
 feeder0_cals = sum(map(float, [(feed_data[feed_in_feeders['feeder0']]['carb_cals_per_gram']),\
 					feed_data[feed_in_feeders['feeder0']]['prot_cals_per_gram'],\
@@ -698,7 +699,8 @@ for monkey in MONKEYS:
 
 	## feeder
 	feeder_counts[monkey] = {'0':[], '1':[], '2':[], 'total':[]}
-	feed_sums[monkey], feed_date_dict = [], {}
+	feed_date_dict, feed_sums[monkey] = {}, [] 
+	feed_sums0[monkey], feed_sums1[monkey], feed_sums2[monkey] = [], [], []
 	try: 				
 		feed_date_dict = feeder[monkey]
 	except KeyError:	
@@ -719,6 +721,9 @@ for monkey in MONKEYS:
 														   + feed_count_2)
 		feed_sums[monkey].append(sum([feed_count_0*feeder0_cals,\
 				feed_count_1*feeder1_cals, feed_count_2*feeder2_cals]))
+		feed_sums0[monkey].append(feed_count_0*feeder0_cals)
+		feed_sums1[monkey].append(feed_count_1*feeder1_cals)
+		feed_sums2[monkey].append(feed_count_2*feeder2_cals)
 				
 	## supp feed
 	supp_feed_sums[monkey], supp_feed_cts[monkey] = [0]*num_days, [0]*num_days
@@ -1130,29 +1135,22 @@ for monkey in MONKEYS:
 		try: monk_activity = activity[station]
 		except KeyError: pass
 	for act_dict in monk_activity.values():
-
 		# loop thru hours as strings, giving zero pad
 		for hr in range(24):
 			hr_str = '0' + str(hr) if hr < 10 else str(hr)	# zero pad
-
 			# sum activity #s for that hour
 			# and add to hr_totals at that hr's index
 			try:
 				# get total activity for that hour
 				hr_total = sum([tup[1] for tup in act_dict[hr_str]])
-
 				# append total to totals
 				activity_hr_totals[monkey].append(hr_total)
-
 				# add totals to total for that hr
 				hr_totals[hr] += hr_total
-
 			except KeyError:
 				pass
-
 		# count date
 		no_days += 1
-
 	# calc avg for each hr
 	activity_hr_avgs[monkey] = [] 
 	try: 
@@ -1180,7 +1178,6 @@ for monkey in MONKEYS:
 		# loop thru hours as strings, giving zero pad
 		for hr in range(24):
 			hr_str = '0' + str(hr) if hr < 10 else str(hr)	# zero pad
-
 			try:
 				for tup in feed_dict[hr_str]:
 					feeder_num = str(tup[2])
@@ -1195,24 +1192,18 @@ for monkey in MONKEYS:
 		feeder_hr_totals[monkey]['0'].extend(hr_cts['0'])
 		feeder_hr_totals[monkey]['1'].extend(hr_cts['1'])
 		feeder_hr_totals[monkey]['2'].extend(hr_cts['2'])
-
 		# get hr total counts
 		hr_total_cts = [x + y + z for x, y, z in zip(hr_cts['0'], \
 													 hr_cts['1'], \
 													 hr_cts['2'])]
-
 		# find feeding hours, based on input threshold
 		for hr, total_ct in enumerate(hr_total_cts):
 			if total_ct > feeding_hour_threshold:
 				feeding_hours[monkey]['day_num'].append(no_days)
 				feeding_hours[monkey]['hour'].append(hr)
-
 		# count date
 		no_days += 1
-
-	# calc and store avgs for each feeder
-	
-							  
+	# calc and store avgs for each feeder			  
 	feeder_hr_avgs[monkey] = {}
 	try: 
 		feeder_hr_avgs[monkey] = {'0': [s/no_days for s in hr_sums['0']], \
@@ -1248,16 +1239,14 @@ for n, monkey in enumerate(MONKEYS):
 													monkey, DAYS_STR), fontsize=15)
 	#fig1.suptitle(DAYS_STR, x=0.1, y=0.99, fontsize=7)
 
-	# TODO: add feeder 2 to "free pellets by hour"
 	totals = [activity_hr_totals[monkey],\
-			  feeder_hr_totals[monkey]['0'],\
-			  feeder_hr_totals[monkey]['1'], \
+			 (feeder_hr_totals[monkey]['0'],feeder_hr_totals[monkey]['2']),\
+			  feeder_hr_totals[monkey]['1'],\
 			  cognitive_hr_totals[monkey]['succ_rate'], \
 			  cognitive_hr_totals[monkey]['comp_succ_rate'], \
 			  cognitive_hr_totals[monkey]['incomp_succ_rate'], \
 			  cognitive_hr_totals[monkey]['comp_pellets'], \
 			  cognitive_hr_totals[monkey]['incomp_pellets']]
-
 	labels = [('Activity By Hour','Activity'), \
 			  ('Free Pellets By Hour','Free Pellets'), \
 			  ('Cognitive Pellets By Hour', 'Cognitive Pellets'), \
@@ -1269,11 +1258,17 @@ for n, monkey in enumerate(MONKEYS):
 
 	for n, total, label in zip(range(1,9), totals, labels):
 		ax11 = fig1.add_subplot(3,3,n)
-
-		if 'Success' in label[1]: 		ax11.plot(total, 'm-')
-		elif 'Dispense' in label[1]: 	ax11.plot(total, 'g-')
-		else: 							ax11.plot(total)
-
+		if 'Success' in label[1]: 		
+			ax11.plot(total, 'm-')
+		elif 'Dispense' in label[1]: 	
+			ax11.plot(total, 'g-')
+		elif 'Free Pellets' in label[0]: 
+			l1, = ax11.plot(total[0], 'r-')
+			l2, = ax11.plot(total[1], 'b-')
+			plt.figlegend((l1,l2), ('Feeder0','Feeder2'), \
+			  'upper right', prop=fontP)
+		else: 							
+			ax11.plot(total)
 		ax11.set_xlabel("Hour", fontsize=7)
 		ax11.set_ylabel(label[1], fontsize=7)
 		ax11.set_title(label[0], fontsize=7)
@@ -1281,9 +1276,16 @@ for n, monkey in enumerate(MONKEYS):
 
 		plt.xticks(fontsize=7)
 		plt.yticks(fontsize=7)
-		plt.xlim(xmin=0, xmax=len(total))
-		try: 	plt.ylim(ymax=1.25*max(total))
-		except: pass
+		try: 	
+			if type(total) == tuple: 
+				total_maxes = map(max, total)
+				plt.ylim(ymax=1.25*max(total_maxes))
+				plt.xlim(xmin=0, xmax=len(total[0]))
+			else: 
+				plt.ylim(ymax=1.25*max(total))
+				plt.xlim(xmin=0, xmax=len(total))
+		except:
+			pass
 		
 	## Feeding Hours 
 	ax11 = fig1.add_subplot(3,3,9)
@@ -1307,14 +1309,13 @@ for n, monkey in enumerate(MONKEYS):
 
 	# add feeder 2 to "free pellets by hour"
 	avgs = [activity_hr_avgs[monkey],\
-			feeder_hr_avgs[monkey]['0'],\ 
-			feeder_hr_avgs[monkey]['1'], \
+		   (feeder_hr_avgs[monkey]['0'], feeder_hr_avgs[monkey]['2']),\
+			feeder_hr_avgs[monkey]['1'],\
 			cognitive_hr_avgs[monkey]['succ_rate'], \
 			cognitive_hr_avgs[monkey]['comp_succ_rate'], \
 			cognitive_hr_avgs[monkey]['incomp_succ_rate'], \
 			cognitive_hr_avgs[monkey]['comp_pellets'], \
 			cognitive_hr_avgs[monkey]['incomp_pellets']]
-
 	labels = [('Activity','Avg Activity'), \
 			  ('Free Pellets By Hour','Avg Free Pellets'), \
 			  ('Cognitive Pellets', 'Avg Cognitive Pellets'), \
@@ -1327,16 +1328,28 @@ for n, monkey in enumerate(MONKEYS):
 	for n, avg, label in zip(range(1,9), avgs, labels):
 		ax22 = fig2.add_subplot(3, 3, n)
 
-		if "Success" in label[0]: 		ax22.plot(avg, 'm-')
-		elif "Dispenses" in label[0]: 	ax22.plot(avg, 'g-')
-		else: 							ax22.plot(avg)
+		if "Success" in label[0]: 		
+			ax22.plot(avg, 'm-')
+		elif "Dispenses" in label[0]: 	
+			ax22.plot(avg, 'g-')
+		elif 'Free Pellets' in label[1]: 
+			l1, = ax22.plot(avg[0], 'r-')
+			l2, = ax22.plot(avg[1], 'b-')
+			plt.figlegend((l1,l2), ('Feeder0','Feeder2'), \
+			  'upper right', prop=fontP)
+		else:
+			ax22.plot(avg)
 
 		ax22.set_title(label[0], fontsize=7)
 		ax22.set_ylabel(label[1], fontsize=7)
 		ax22.set_xlabel("Hour", fontsize=7)
 
 		plt.xlim(0, 24)
-		plt.ylim(ymin=0, ymax=1.25*max(avg))
+		if type(avg) == tuple: 
+			avg_maxes = map(max, avg)
+			plt.ylim(ymin=0, ymax=1.25*max(avg_maxes))
+		else: 
+			plt.ylim(ymin=0, ymax=1.25*max(avg))
 		plt.xticks(filter(lambda x: x%2==0, range(24)), fontsize=7)
 		plt.yticks(fontsize=7)
 
@@ -1379,9 +1392,22 @@ feed_mean = {m: int(mean(avgs)) if not np.isnan(mean(avgs)) else 0 \
 					for m, avgs in feed_sums.items()}
 feed_var  = {m: int(std(avgs)) if not np.isnan(mean(avgs)) else 0 \
 					for m, avgs in feed_sums.items()}
+feed_mean0 = {m: int(mean(avgs)) if not np.isnan(mean(avgs)) else 0 \
+					for m, avgs in feed_sums0.items()}
+feed_var0  = {m: int(std(avgs)) if not np.isnan(mean(avgs)) else 0 \
+					for m, avgs in feed_sums0.items()}
+feed_mean1 = {m: int(mean(avgs)) if not np.isnan(mean(avgs)) else 0 \
+					for m, avgs in feed_sums1.items()}
+feed_var1  = {m: int(std(avgs)) if not np.isnan(mean(avgs)) else 0 \
+					for m, avgs in feed_sums1.items()}
+feed_mean2 = {m: int(mean(avgs)) if not np.isnan(mean(avgs)) else 0 \
+					for m, avgs in feed_sums2.items()}
+feed_var2  = {m: int(std(avgs)) if not np.isnan(mean(avgs)) else 0 \
+					for m, avgs in feed_sums2.items()}
 feed_counts = {m: int(mean(feeder_counts[m]['total'])) \
 					if not np.isnan(mean(feeder_counts[m]['total'])) else 0 \
 					for m in feed_sums.keys()}
+					
 fd_ranks = mstats.rankdata(np.ma.masked_invalid(feed_mean.values()))
 feed_ranks = {m: int(len(fd_ranks)-rank+1) for m, rank in zip(feed_mean, list(fd_ranks))}
 
@@ -1419,22 +1445,31 @@ body.section().h2("Summary:")
 sec = body.section()
 t = sec.table()
 r = t.tr()		# add column names
-for col in ['Monkey','Mean Daily Feeding (g)','Mean Daily Calories (kcals)',\
-			'Std Daily Calories (kcals)','Mean Calories Rank']: 
+for col in ['Monkey','Mean +/- Std Daily Total(kcals)',\
+			'Mean +/- Std Daily Feeder0 (kcals)',\
+			'Mean +/- Std Daily Feeder1 (kcals)',\
+			'Mean +/- Std Daily Feeder2 (kcals)',\
+			'Mean +/- Std Daily Supp_Feed (kcals)']: 
 	r.td.b(col)
 # add stats
+str_na = lambda o: str(o) if not np.isnan(o) else 'N/a'
 for m in sorted(feed_ranks, key=feed_ranks.get): 
 	r = t.tr()
-	for s in [m] + map(lambda f: str(f) if not np.isnan(f) else 'N/a',\
-							[feed_counts[m],feed_mean[m],feed_var[m],feed_ranks[m]]): 
+	for s in [MONKEYS[m]['station'] + '-' + m] +\
+							map(lambda (m, s): str_na(m) + ' +/- ' + str_na(s), \
+							[(feed_mean[m],feed_var[m]),   (feed_mean0[m],feed_var0[m]),\
+							 (feed_mean1[m],feed_var1[m]), (feed_mean2[m],feed_var2[m]),\
+							 (mean(supp_feed_sums[m]), std(supp_feed_sums[m]))]): 
 		r.td(s)
+		
+		
 
 body.br
 t = body.table
 r = t.tr()
 r = t.tr()
-r.td("Electronically Signed By:")
-r.td(lab_member)
+#r.td("Electronically Signed By:")
+#r.td(lab_member)
 r.td(datetime_str)
 
 #write HTML to pdf
