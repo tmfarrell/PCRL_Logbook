@@ -1,2 +1,0 @@
-days, 10
-report_dir, C:/Users/Server1/Desktop/pcrl_data_management/pcrl_data_management/test_reports/

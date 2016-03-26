@@ -65,7 +65,7 @@ namespace PCRLLogbook
                 {
                     try {
                         Labroom.Data[labroom][i] = Data[labroom][i].getData();
-                        MessageBox.Show("Got data from reviewbox and stored in labroom data struct..."); 
+                        //MessageBox.Show("Got data from reviewbox and stored in labroom data struct..."); 
 
                     }
                     catch (KeyNotFoundException exp) {

@@ -23,13 +23,18 @@ namespace PCRLLogbook
         public DateTime labroomCheckOut;
         public LoginForm Login = new LoginForm();
         public string[] LabroomNum = { "W715", "W716", "W718" };
+        public Dictionary<string, bool> recorded = new Dictionary<string, bool>() {
+            {"W715", false}, 
+            {"W716", false}, 
+            {"W718", false}
+        }; 
         public Dictionary<string, LogData[]> Data = new Dictionary<string, LogData[]>();
         Dictionary<string, string> DBSchema = new Dictionary<string, string>() {
 	        {"observation", "(date_time, lab_member, labroom, behavior, stool, training, " + 
-                "blood, comments, equip_deficiency, weight, monkey)"},
+                "comments, equip, monkey)"},
             {"labmember", "(lab_member, first, last, password, cell_num)"}, 
             {"labroomlog", "(checkin, checkout, lab_member, labroom)"}, 
-            {"loginlog", "(login, logout, lab_member)"}, 
+            {"loginlog", "(login, logout, lab_member)"}
 	    };
 
 
@@ -62,32 +67,51 @@ namespace PCRLLogbook
         } 
         private void labroomButton1_Click(object sender, EventArgs e)
         {
-            labroomCheckIn = DateTime.Now; 
-
-            //init logform for W715
-            LogForm logForm = new LogForm(this, LabroomNum[0], Login);
-            logForm.Show(); 
-            Hide(); 
+            labroomCheckIn = DateTime.Now;
+            if (recorded[LabroomNum[0]])
+            {
+                MessageBox.Show("Data was already entered for " + LabroomNum[0] +
+                    ".\nPlease see Review and Save to change previously recorded data.");
+            }
+            else
+            {
+                //init logform for W715
+                LogForm logForm = new LogForm(this, LabroomNum[0], Login);
+                logForm.Show();
+                Hide();
+            } 
         }
 
         private void labroomButton2_Click(object sender, EventArgs e)
         {
             labroomCheckIn = DateTime.Now;
-
-            //init logform for W716
-            LogForm logForm = new LogForm(this, LabroomNum[1], Login);
-            logForm.Show();
-            Hide(); 
+            if (recorded[LabroomNum[1]])
+            {
+                MessageBox.Show("Data was already entered for " + LabroomNum[1] +
+                    ".\nPlease see Review and Save to change previously recorded data.");
+            }
+            else
+            {
+                //init logform for W716
+                LogForm logForm = new LogForm(this, LabroomNum[1], Login);
+                logForm.Show();
+                Hide();
+            } 
         }
 
         private void labroomButton3_Click(object sender, EventArgs e)
         {
             labroomCheckIn = DateTime.Now;
 
-            //init logform for W718
-            LogForm logForm = new LogForm(this, LabroomNum[2], Login);
-            logForm.Show();
-            Hide(); 
+            if (recorded[LabroomNum[2]]) {
+                MessageBox.Show("Data was already entered for " + LabroomNum[2] + 
+                    ".\nPlease see Review and Save to change previously recorded data."); 
+            } else {
+                //init logform for W718
+                LogForm logForm = new LogForm(this, LabroomNum[2], Login);
+                logForm.Show();
+                Hide(); 
+            } 
         }
 
         private void logoutButton_Click(object sender, EventArgs e)
@@ -141,17 +165,32 @@ namespace PCRLLogbook
             {
                 foreach (LogData log in Data[labroom])
                 { 
+                    //MessageBox.Show(log.notEmpty().ToString()); 
+                    //MessageBox.Show(log.toString());
                     if (log.notEmpty())
                     {
                         //MessageBox.Show(log.toString());
+                        // record observations 
                         sql = "INSERT INTO observation" + DBSchema["observation"] + " VALUES ('" + 
                               DateTime.Now.ToString() + "','" + labMember + "','" + log.Labroom + 
-                              "'," + log.Behavior + "," + log.Stool + "," + log.Training + "," + 
-                              Convert.ToInt16(log.Blood) + ",'" + log.Comments + "'," + log.getEquip() + 
-                              "," + log.Weight + ",'" + log.Mid + "')";
+                              "'," + log.Behavior + "," + log.Stool + "," + log.Training + ",'" + 
+                              log.Comments + "'," + log.getEquip() + ",'" + log.Mid + "')";
                         //MessageBox.Show(sql); 
                         command = new SQLiteCommand(sql, m_dbConnection);
                         command.ExecuteNonQuery(); 
+
+                        // record supplemental feed 
+                        if (log.SuppFed)
+                        {
+                            foreach (KeyValuePair<string, double> sf in Login.config.supplemental_feed_templates[log.SuppFeedTemplate])
+                            {
+                                sql = "INSERT INTO supp_feed(date_time, labmember, name, amount, mid) " +
+                                      "VALUES ('" + DateTime.Now.ToString() + "', '" + labMember + "', '" +
+                                      sf.Key + "', " + Convert.ToString(sf.Value) + ", '" + log.Mid + "')";
+                                command = new SQLiteCommand(sql, m_dbConnection);
+                                command.ExecuteNonQuery(); 
+                            }
+                        }  
                     }
                 }
             }
@@ -163,6 +202,24 @@ namespace PCRLLogbook
         {
             ReviewForm reviewForm = new ReviewForm(this);
             reviewForm.Show(); 
+        }
+
+        private void generateReportsButton_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process process = new System.Diagnostics.Process();
+            System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
+            startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
+            startInfo.FileName = "C:\\Python27\\python.exe";
+            startInfo.Arguments = Login.base_dir + "GenerateDailyReports.py";
+            startInfo.UseShellExecute = false;
+            startInfo.RedirectStandardOutput = true;
+            process.StartInfo = startInfo;
+            process.Start();
+        }
+
+        public void dataRecorded(string labroom)
+        {
+            recorded[labroom] = true; 
         }
     }
 }

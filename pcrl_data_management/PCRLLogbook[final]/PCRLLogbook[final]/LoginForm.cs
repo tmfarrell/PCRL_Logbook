@@ -30,11 +30,15 @@ namespace PCRLLogbook
             InitializeComponent();
 
             // init directory paths 
-            base_dir = "X:\\Documents\\projects\\PCRL_Logbook\\pcrl_data_management\\"; //ConfigurationSettings.AppSettings["BaseDirectory"];
+            base_dir = ConfigurationSettings.AppSettings["BaseDirectory"];
             db_dir = base_dir + "PCRL_phizer_study.db";
             config_path = base_dir + "config.json";
+        }
 
-            // init config object from json file 
+        private void loginButton_Click(object sender, EventArgs e)
+        {
+            // load upon each login
+            // so that to reload config, can logout and log back in
             string json = "";
             try
             {
@@ -43,39 +47,33 @@ namespace PCRLLogbook
                     json = sr.ReadToEnd();
                 }
             }
-            catch (Exception e)
+            catch (Exception exp)
             {
                 Console.WriteLine("The file could not be read:");
-                Console.WriteLine(e.Message);
+                Console.WriteLine(exp.Message);
             }
-            MessageBox.Show(json); 
             config = JsonConvert.DeserializeObject<Config>(json); 
-        }
 
-        private void loginButton_Click(object sender, EventArgs e)
-        {
+            //check login
             if (usernameTextbox.Text.Equals(string.Empty)) { 
                 MessageBox.Show("Please fill in username and password fields."); 
                 return; 
             } 
             
-            // get username and password from form 
             username = usernameTextbox.Text;
             password = passwordTextbox.Text;
 
-            // get labmember data from config 
             Dictionary<string, Dictionary<string, string>> labmembers = config.labmember_data; 
 
-            // match labmember to un and pwd 
             var user =
                 from labmember in labmembers
                 where labmember.Key.Equals(username) && labmember.Value["password"].Equals(password)
                 select labmember;
 
-            if (!user.Any())    // if no match
+            if (!user.Any())    
                 MessageBox.Show("Invalid username or password.\nPlease proceed to create an account.");
             else
-            {   // store name and open labroom form 
+            {   
                 name[0] = user.First().Value["first"]; 
                 name[1] = user.First().Value["last"];  
                 LabroomForm labroomForm = new LabroomForm(this);
@@ -89,6 +87,19 @@ namespace PCRLLogbook
             CreateAccountForm createAcct = new CreateAccountForm(this);
             Hide();
             createAcct.Show(); 
+        }
+
+        private void generateReports_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process process = new System.Diagnostics.Process();
+            System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
+            startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
+            startInfo.FileName = "C:\\Python27\\python.exe";
+            startInfo.Arguments = base_dir + "GenerateDailyReports.py";
+            startInfo.UseShellExecute = false;
+            startInfo.RedirectStandardOutput = true;
+            process.StartInfo = startInfo;
+            process.Start();
         }
     }
 }

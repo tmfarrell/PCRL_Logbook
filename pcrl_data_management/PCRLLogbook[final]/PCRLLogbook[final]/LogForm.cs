@@ -16,6 +16,13 @@ namespace PCRLLogbook
         string labroom;
         LoginForm Login = new LoginForm();               
         LogData[] monksData = new LogData[8];    //array of data structs
+        SuppFood[] supp_foods = new SuppFood[] { 
+                    new SuppFood(), 
+                    new SuppFood(), 
+                    new SuppFood(), 
+                    new SuppFood(), 
+                    new SuppFood()
+                }; 
         LabroomForm Labroom = new LabroomForm();
         Dictionary<string, string[]> monkeys = new Dictionary<string, string[]>(); 
 
@@ -32,38 +39,30 @@ namespace PCRLLogbook
             labmemberFillLabel.Text = Login.name[0] + " " + Login.name[1];
             checkinFillLabel.Text = this.labroom + ", " + DateTime.Now.ToShortTimeString()
                                                  +  " " + DateTime.Now.ToLongDateString();
-
-            // get all monkey data from db
-            SQLiteConnection m_dbConnection = new SQLiteConnection("DataSource=PCRL_phizer_study.db;Version=3");
-            m_dbConnection.Open();
-            string sql = "SELECT * FROM monkey";
-            SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
-            SQLiteDataReader reader = command.ExecuteReader();
-            while (reader.Read())
-                monkeys[reader["mid"].ToString()] = new string[2] {reader["station"].ToString(), reader["labroom"].ToString()}; 
-            m_dbConnection.Close();
+            // get monkey data from config 
+            Dictionary<string, Dictionary<string, string>> monkeys = Login.config.monkey_data;
 
             // get monkeys for this labroom
             var monks =
                 from monkey in monkeys
-                where monkey.Value[1].Equals(this.labroom)
+                where monkey.Value["room"].Equals(this.labroom)
                 select monkey;
 
             int index = 0;
             numMonks = monks.ToArray().Length;
-            int half = numMonks / 2; 
+            int half = numMonks / 2;
 
             foreach (var m in monks)
             {
-                LogBox monkLogbox = new LogBox(m.Key, m.Value[0], this.labroom); 
-                
+                LogBox monkLogbox = new LogBox(m.Key, m.Value["station"], this.labroom, Login.config);
+
                 //add half to left, half to right 
                 if (index < half)
                     this.leftLayoutPanel.Controls.Add(monkLogbox);
                 else
                     this.rightLayoutPanel.Controls.Add(monkLogbox);
                 index++;
-            }
+            } 
         }
 
         //returns array of data structs
@@ -91,12 +90,24 @@ namespace PCRLLogbook
 
         private void saveCheckoutButton_Click(object sender, EventArgs e)
         {
-            saveData();
-            //printData();  
-            Labroom.setCheckOutTime(DateTime.Now, labroom);
-            Labroom.storeData(labroom, monksData); 
-            Labroom.Show();                                 
-            Close(); 
+            DialogResult result = MessageBox.Show(
+                "Are you sure you want to go save and checkout?\n" +
+                "Once checked out, you will need to use the review-and-save form\n" + 
+                "to change this recorded data.",
+                "Warning", MessageBoxButtons.YesNo);
+            if (result == DialogResult.Yes)
+            {
+                saveData();
+                //printData();  
+                Labroom.setCheckOutTime(DateTime.Now, labroom);
+                Labroom.storeData(labroom, monksData);
+                Labroom.Show();
+                Close(); 
+            }
+            else
+            {
+                return;
+            } 
         }
 
         private void saveData()
@@ -109,6 +120,8 @@ namespace PCRLLogbook
 
             foreach (LogBox logBox in this.rightLayoutPanel.Controls)
                 monksData[index++] = logBox.GetData();
+
+            Labroom.dataRecorded(labroom); 
         } 
 
         private void saveButton_Click(object sender, EventArgs e)

@@ -1,0 +1,463 @@
+{
+  "days": 10,
+  "data_dir": "Z:\\",
+  "db_file": "F:\\pcrl_logbook_data\\PCRL_2016_data_0.db",
+  "report_dir": "E:\\Dropbox\\PCRL Reports\\",
+  "report_custom": false,
+  "feeding_hour_threshold": 26,
+  "behavior_list": [
+    "BAR",
+    "pacing",
+    "self-injury",
+    "aggressive",
+    "normal"
+  ],
+  "equipment_list": [
+    "LIXIT",
+    "feeder0",
+    "feeder1",
+    "feeder2",
+    "fan",
+    "computer",
+    "cables",
+    "front camera",
+    "back camera",
+    "top camera",
+    "sensors",
+    "lights/IR",
+    "peristaltic pump"
+  ],
+  "training_list": [
+    "comfortable w/ reduced space",
+    "comfortable w/ touching",
+    "presenting leg", 
+	"allow leg out"
+  ],
+  "stool_list": [
+    "normal",
+    "pasty formed",
+    "pasty",
+    "pasty soft",
+    "soft",
+    "diarrhea",
+    "no stool"
+  ],
+  "custom_dates": {
+    "to": "2015-09-07",
+    "from": "2015-09-03"
+  },
+  "feed_in_feeders": {
+    "feeder0": "dustless presicion pellets",
+    "feeder1": "dustless presicion pellets",
+    "feeder2": "yogurt"
+  },
+  "feed_data": {
+    "apple": {
+      "category": "fruit",
+      "water_percent": "0.86",
+      "prot_cals_per_gram": "0.104",
+      "fiber_percent": "0.024",
+      "fat_cals_per_gram": "0.0153",
+      "carb_cals_per_gram": "0.56"
+    },
+    "green beans": {
+      "category": "vegetables",
+      "water_percent": "0.9",
+      "prot_cals_per_gram": "0.072",
+      "fiber_percent": "0.027",
+      "fat_cals_per_gram": "0.0198",
+      "carb_cals_per_gram": "2.8"
+    },
+    "kale": {
+      "category": "vegetables",
+      "water_percent": "0.84",
+      "prot_cals_per_gram": "0.16",
+      "fiber_percent": "0.036",
+      "fat_cals_per_gram": "0.0837",
+      "carb_cals_per_gram": "0.352"
+    },
+    "spinach": {
+      "category": "vegetables",
+      "water_percent": "0.91",
+      "prot_cals_per_gram": "0.116",
+      "fiber_percent": "0.022",
+      "fat_cals_per_gram": "0.0351",
+      "carb_cals_per_gram": "0.148"
+    },
+    "celery": {
+      "category": "vegetables",
+      "water_percent": "0.95",
+      "prot_cals_per_gram": "0.0276",
+      "fiber_percent": "0.016",
+      "fat_cals_per_gram": "0.0153",
+      "carb_cals_per_gram": "1.2"
+    },
+    "lettuce": {
+      "category": "vegetables",
+      "water_percent": "0.95",
+      "prot_cals_per_gram": "0.0276",
+      "fiber_percent": "0.016",
+      "fat_cals_per_gram": "0.0153",
+      "carb_cals_per_gram": "1.2"
+    },
+    "yogurt": {
+      "category": "liquid food",
+      "water_percent": "0.88",
+      "prot_cals_per_gram": "0.14",
+      "fiber_percent": "0",
+      "fat_cals_per_gram": "0.297",
+      "carb_cals_per_gram": "0.188"
+    },
+    "peanuts": {
+      "category": "nuts",
+      "water_percent": "0.65",
+      "prot_cals_per_gram": "1.04",
+      "fiber_percent": "0.0085",
+      "fat_cals_per_gram": "4.41",
+      "carb_cals_per_gram": "0.64"
+    },
+    "banana": {
+      "category": "fruit",
+      "water_percent": "0.75",
+      "prot_cals_per_gram": "0.44",
+      "fiber_percent": "0.026",
+      "fat_cals_per_gram": "0.0297",
+      "carb_cals_per_gram": "0.92"
+    },
+    "zucchini": {
+      "category": "vegetables",
+      "water_percent": "0.95",
+      "prot_cals_per_gram": "0.048",
+      "fiber_percent": "0.01",
+      "fat_cals_per_gram": "0.0288",
+      "carb_cals_per_gram": "0.12"
+    },
+    "kiwi": {
+      "category": "fruit",
+      "water_percent": "0.83",
+      "prot_cals_per_gram": "0.044",
+      "fiber_percent": "0.03",
+      "fat_cals_per_gram": "0.468",
+      "carb_cals_per_gram": "0.56"
+    },
+    "cantaloupe": {
+      "category": "fruit",
+      "water_percent": "0.9",
+      "prot_cals_per_gram": "0.0336",
+      "fiber_percent": "0.009",
+      "fat_cals_per_gram": "0.0171",
+      "carb_cals_per_gram": "0.3264"
+    },
+    "raisins": {
+      "category": "fruit",
+      "water_percent": "0.15",
+      "prot_cals_per_gram": "0.148",
+      "fiber_percent": "0.037",
+      "fat_cals_per_gram": "0.0414",
+      "carb_cals_per_gram": "1.96"
+    },
+    "pear": {
+      "category": "fruit",
+      "water_percent": "0.84",
+      "prot_cals_per_gram": "0.0144",
+      "fiber_percent": "0.031",
+      "fat_cals_per_gram": "0.0126",
+      "carb_cals_per_gram": "0.6"
+    },
+    "orange": {
+      "category": "fruit",
+      "water_percent": "0.86",
+      "prot_cals_per_gram": "0.04",
+      "fiber_percent": "0.025",
+      "fat_cals_per_gram": "0.027",
+      "carb_cals_per_gram": "0.48"
+    },
+    "watermelon": {
+      "category": "fruit",
+      "water_percent": "0.91",
+      "prot_cals_per_gram": "0.244",
+      "fiber_percent": "0.004",
+      "fat_cals_per_gram": "0.135",
+      "carb_cals_per_gram": "3.04"
+    },
+    "grapes": {
+      "category": "fruit",
+      "water_percent": "0.81",
+      "prot_cals_per_gram": "0.288",
+      "fiber_percent": "0.009",
+      "fat_cals_per_gram": "0.144",
+      "carb_cals_per_gram": "0.72"
+    },
+    "romaine lettuce": {
+      "category": "vegetables",
+      "water_percent": "0.44",
+      "prot_cals_per_gram": "0.048",
+      "fiber_percent": "0.01",
+      "fat_cals_per_gram": "0.027",
+      "carb_cals_per_gram": "0.132"
+    },
+    "dustless presicion pellets": {
+      "category": "dry food",
+      "water_percent": "0",
+      "prot_cals_per_gram": "0.81",
+      "fiber_percent": "0.115",
+      "fat_cals_per_gram": "0.56",
+      "carb_cals_per_gram": "2.08"
+    },
+    "monkey diet jumbo 5038 (biscuits)": {
+      "category": "dry food",
+      "water_percent": "0",
+      "prot_cals_per_gram": "0.58",
+      "fiber_percent": "0.14",
+      "fat_cals_per_gram": "0.42",
+      "carb_cals_per_gram": "2.19"
+    },
+    "carrot": {
+      "category": "vegetables",
+      "water_percent": "0.88",
+      "prot_cals_per_gram": "0.0372",
+      "fiber_percent": "0.29",
+      "fat_cals_per_gram": "0.0216",
+      "carb_cals_per_gram": "0.384"
+    },
+    "pineapple": {
+      "category": "fruit",
+      "water_percent": "0.86",
+      "prot_cals_per_gram": "0.216",
+      "fiber_percent": "0.014",
+      "fat_cals_per_gram": "0.108",
+      "carb_cals_per_gram": "0.52"
+    },
+    "sweet potato": {
+      "category": "vegetables",
+      "water_percent": "0.77",
+      "prot_cals_per_gram": "0.064",
+      "fiber_percent": "0.03",
+      "fat_cals_per_gram": "0.0045",
+      "carb_cals_per_gram": "0.8"
+    },
+    "mango": {
+      "category": "fruit",
+      "water_percent": "0.77",
+      "prot_cals_per_gram": "0.064",
+      "fiber_percent": "0.03",
+      "fat_cals_per_gram": "0.0045",
+      "carb_cals_per_gram": "0.8"
+    }
+  },
+  "supp_feed_templates": {
+    "apples and bananas": {
+      "apple": 5.0,
+      "banana": 3.0,
+      "orange": 1.0
+    },
+    "zucchini": {
+      "zucchini": 50.0
+    },
+    "grapes and peanuts and yogurt": {
+      "grapes": 40.0,
+      "peanuts": 20.0,
+      "yogurt": 40.0
+    },
+    "lettuce and yogurt": {
+      "lettuce": 50.0,
+      "yogurt": 40.0
+    },
+    "carrot and yogurt": {
+      "carrot": 100.0,
+      "yogurt": 40.0
+    },
+    "grapes": {
+      "grapes": 40.0
+    },
+    "lettuce": {
+      "lettuce": 100.0
+    },
+    "celery": {
+      "celery": 50.0
+    },
+    "carrot": {
+     "carrot": 50.0
+    },
+    "banana": {
+      "banana": 100.0
+    },
+    "yogurt": {
+      "yogurt": 40.0
+    },
+    "sweet potato": {
+      "sweet potato": 100.0
+    }
+  },
+  "monkey_data": {
+    "JB67": {
+      "dob": "04/26/2010",
+      "station": "803",
+      "room": "W718",
+      "sex": "M"
+    },
+    "29351": {
+      "dob": "04/21/2010",
+      "station": "608",
+      "room": "W716",
+      "sex": "M"
+    },
+    "JB68": {
+      "dob": "04/26/2010",
+      "station": "601",
+      "room": "W716",
+      "sex": "M"
+    },
+    "29319": {
+      "dob": "03/05/2010",
+      "station": "802",
+      "room": "W718",
+      "sex": "M"
+    },
+    "29356": {
+      "dob": "02/20/2010",
+      "station": "604",
+      "room": "W716",
+      "sex": "M"
+    },
+    "29132": {
+      "dob": "05/24/2010",
+      "station": "804",
+      "room": "W718",
+      "sex": "M"
+    },
+    "28254": {
+      "dob": "05/17/2009",
+      "station": "602",
+      "room": "W716",
+      "sex": "M"
+    },
+    "29447": {
+      "dob": "03/18/2010",
+      "station": "502",
+      "room": "W715",
+      "sex": "M"
+    },
+    "28944": {
+      "dob": "05/06/2010",
+      "station": "508",
+      "room": "W715",
+      "sex": "M"
+    },
+    "28212": {
+      "dob": "05/18/2009",
+      "station": "606",
+      "room": "W716",
+      "sex": "M"
+    },
+    "28966": {
+      "dob": "04/19/2010",
+      "station": "507",
+      "room": "W715",
+      "sex": "M"
+    },
+    "29360": {
+      "dob": "04/06/2010",
+      "station": "503",
+      "room": "W715",
+      "sex": "M"
+    },
+    "29342": {
+      "dob": "03/22/2010",
+      "station": "607",
+      "room": "W716",
+      "sex": "M"
+    },
+    "28988": {
+      "dob": "03/22/2010",
+      "station": "501",
+      "room": "W715",
+      "sex": "M"
+    },
+    "28716": {
+      "dob": "04/07/2009",
+      "station": "504",
+      "room": "W715",
+      "sex": "M"
+    },
+    "JG89": {
+      "dob": "06/30/2010",
+      "station": "807",
+      "room": "W718",
+      "sex": "M"
+    },
+    "28987": {
+      "dob": "03/22/2010",
+      "station": "603",
+      "room": "W716",
+      "sex": "M"
+    },
+    "28133": {
+      "dob": "05/18/2009",
+      "station": "505",
+      "room": "W715",
+      "sex": "M"
+    },
+    "JG36": {
+      "dob": "06/22/2010",
+      "station": "806",
+      "room": "W718",
+      "sex": "M"
+    },
+    "29065": {
+      "dob": "05/10/2010",
+      "station": "801",
+      "room": "W718",
+      "sex": "M"
+    },
+    "29061": {
+      "dob": "05/10/2010",
+      "station": "805",
+      "room": "W718",
+      "sex": "M"
+    },
+    "28977": {
+      "dob": "01/26/2010",
+      "station": "605",
+      "room": "W716",
+      "sex": "M"
+    },
+    "27793": {
+      "dob": "03/20/2009",
+      "station": "506",
+      "room": "W715",
+      "sex": "M"
+    },
+    "28973": {
+      "dob": "04/19/2010",
+      "station": "808",
+      "room": "W718",
+      "sex": "M"
+    }
+  },
+  "labmember_data": {
+    "admin": {
+      "password": "PCRLBostonU",
+      "last": "admin",
+      "first": "PCRL"
+    },
+    "tmf": {
+      "first": "Tim",
+      "last": "Farrell",
+      "password": "password",
+      "cellnum": "(123)456-7890"
+    },
+    "valerie": {
+      "first": "valerie",
+      "last": "maymi",
+      "password": "PCRLBU",
+      "cellnum": "(787)349-4486"
+    },
+    "xin": {
+      "first": "xin",
+      "last": "sha",
+      "password": "zhdanova",
+      "cellnum": "(617)283-4858"
+    }
+  }
+}

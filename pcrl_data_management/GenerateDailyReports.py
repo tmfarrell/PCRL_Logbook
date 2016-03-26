@@ -22,7 +22,7 @@ import string
 import sqlite3
 import datetime
 import itertools
-from numpy import *
+#from numpy import *
 
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -33,6 +33,13 @@ from matplotlib.ticker import LinearLocator, FixedLocator, FormatStrFormatter, \
 							  OldScalarFormatter, MultipleLocator, MaxNLocator
 
 
+base_dir = 'X:\Documents\projects\PCRL_Logbook\pcrl_data_management\\'
+#C:\\Users\\Server1\\Desktop\\PCRL_Logbook\\pcrl_data_management\\'
+
+sys.path.append(base_dir + 'libs\PyPDF2-master')
+import PyPDF2
+
+
 #############################################################
 #				  		Functions 							#
 #############################################################
@@ -41,61 +48,58 @@ from matplotlib.ticker import LinearLocator, FixedLocator, FormatStrFormatter, \
 # PCRL_phizer_study.db (sqlite3) and builds and returns a dict data struct where
 # keys = monkeys, values = dicts(dates, lists(rows))
 def TableToDailyDict(table):
-
-	dict_ = {}
+	daily = {}
 
 	for row in table:
 		monkey = row[-1]
 		date = row[0].split(' ')[0]
 
-		if monkey not in dict_.keys():
-			dict_[monkey] = {date: [row]}
+		if monkey not in daily.keys():
+			daily[monkey] = {date: [row]}
 
 		else:
-			if date not in dict_[monkey].keys():
-				dict_[monkey][date] = [row]
+			if date not in daily[monkey].keys():
+				daily[monkey][date] = [row]
 			else:
-				dict_[monkey][date].append(row)
+				daily[monkey][date].append(row)
 
-	return dict_
+	return daily
 
 
 # takes a list of tuples, resulting from SELECT query of
 # PCRL_phizer_study.db (sqlite3) and builds and returns a dict data struct where
 # keys = monkeys, values = dicts(dates, dicts(hours, rows))
 def TableToHourlyDict(table):
-	dict_ = {}
+	hourly = {}
 
 	for row in table:
 		monkey = row[-1]
 		date = row[0].split(' ')[0]
 		hour = row[0].split(' ')[-1].split(':')[0]
 
-		if monkey not in dict_.keys():
-			dict_[monkey] = {date: {hour: [row]}}
+		if monkey not in hourly.keys():
+			hourly[monkey] = {date: {hour: [row]}}
 
 		else:
-			if date not in dict_[monkey].keys():
-				dict_[monkey][date] = {hour: [row]}
+			if date not in hourly[monkey].keys():
+				hourly[monkey][date] = {hour: [row]}
 			else:
-				if hour not in dict_[monkey][date].keys():
-					dict_[monkey][date][hour] = [row]
+				if hour not in hourly[monkey][date].keys():
+					hourly[monkey][date][hour] = [row]
 				else:
-					dict_[monkey][date][hour].append(row)
-	return dict_
+					hourly[monkey][date][hour].append(row)
+	return hourly
 
 
 # imports data for last n_days from each PCRL_phizer_study.db table
 # returns all tables in lists(tuples) format
 def ImportDataForLast(n_days):
-	db_path = '/Users/tfarrell/Code/pcrl/pcrl_data_management/' + \
-			  'pcrl_data_management/PCRL_phizer_study.db'
 	n_days += 2
 
 	Tables = {}
-	table_names = ['activity', 'cognitive', 'feeder', 'scale']
+	table_names = ['activity', 'cognitive', 'feeder', 'scale', 'observation']
 
-	conn = sqlite3.connect(db_path)
+	conn = sqlite3.connect(DB_PATH)
 
 	for table_name in table_names:
 		Tables[table_name] = conn.execute("SELECT * FROM " + table_name + \
@@ -106,6 +110,27 @@ def ImportDataForLast(n_days):
 	conn.close()
 
 	return Tables
+
+
+# imports data from each PCRL_phizer_study.db table
+# between the two input dates; returns all tables in lists(tuples) format
+def ImportData(from_, to):
+	Tables = {}
+	table_names = ['activity', 'cognitive', 'feeder', 'scale', 'observation']
+
+	conn = sqlite3.connect(DB_PATH)
+
+	for table_name in table_names:
+		Tables[table_name] = conn.execute("SELECT * FROM " + table_name + \
+		" WHERE CAST(strftime('%s', date(date_time)) AS INTEGER) > " + \
+			   "CAST(strftime('%s', date('" + from_ + "')) AS INTEGER) " + \
+		"AND CAST(strftime('%s', date(date_time)) AS INTEGER) < " + \
+			   "CAST(strftime('%s', date('" + to_ + "')) AS INTEGER) ").fetchall()
+
+	conn.close()
+
+	return Tables
+
 
 
 # generates stats from cognitive dict for an individual monkey
@@ -371,7 +396,7 @@ def CalcHourlyCognitiveStats(cognitive_monk_dict):
 							# record time button is clicked
 							end_c = row[1]
 							# record choice rxn time
-							rxn_ct = random.randint(0,40) 	#float(end_c - start_c)
+							rxn_ct = float(end_c - start_c)
 
 							choice_rxn.append(rxn_ct)
 							ov_rxn.append(rxn_ct)
@@ -416,7 +441,7 @@ def CalcHourlyCognitiveStats(cognitive_monk_dict):
 					# record time ex button clicked
 						if start_x != 0:
 							end_x = row[1]
-							rxn_xt = random.randint(0,40) 	#float(end_x - start_x)
+							rxn_xt = float(end_x - start_x)
 							#time_of_choice = line.split(' ')[3] +' '+ \
 							# 									 line.split(' ')[4]
 							ex_rxn.append(rxn_xt)  # record ex rxn time
@@ -447,117 +472,117 @@ def CalcHourlyCognitiveStats(cognitive_monk_dict):
 				cognitive_hr_sums['incomp_pellets'][hr] += incomp_pellets
 
 
-				val_dummy = 0
+				stat = 0
 				try:
-					val_dummy = random.randint(0,100)	#100.0*corr/(corr + incorr))
-					cognitive_hr_totals['succ_rate'].append(val_dummy)
-					cognitive_hr_sums['succ_rate'][hr] += val_dummy
+					stat = 100.0 * corr/(corr + incorr))
+					cognitive_hr_totals['succ_rate'].append(stat)
+					cognitive_hr_sums['succ_rate'][hr] += stat
 				except ZeroDivisionError:
 					cognitive_hr_totals['succ_rate'].append(0.0)
 
 				if comp_succ_rate == []:
 					cognitive_hr_totals['comp_succ_rate'].append(0)
 				else:
-					val_dummy = 100.0 * float(average(comp_succ_rate))
-					cognitive_hr_sums['comp_succ_rate'][hr] += val_dummy
-					cognitive_hr_totals['comp_succ_rate'].append(val_dummy)
+					stat = 100.0 * float(average(comp_succ_rate))
+					cognitive_hr_sums['comp_succ_rate'][hr] += stat
+					cognitive_hr_totals['comp_succ_rate'].append(stat)
 
 				if incomp_succ_rate == []:
 					cognitive_hr_totals['incomp_succ_rate'].append(0)
 				else:
-					val_dummy = 100.0 * float(average(incomp_succ_rate))
-					cognitive_hr_sums['incomp_succ_rate'][hr] += val_dummy
-					cognitive_hr_totals['incomp_succ_rate'].append(val_dummy)
-				'''
+					stat = 100.0 * float(average(incomp_succ_rate))
+					cognitive_hr_sums['incomp_succ_rate'][hr] += stat
+					cognitive_hr_totals['incomp_succ_rate'].append(stat)
+
 				if ex_rxn == []:
 					cognitive_hr_totals['ex_rxn'].append(0)
 					cognitive_hr_totals['ex_rxn_sd'].append(0)
 				else:
-					val_dummy = sum(ex_rxn) / len(ex_rxn)
-					cognitive_hr_sums['ex_rxn'][hr] += val_dummy
-					cognitive_hr_totals['ex_rxn'].append(val_dummy)
+					stat = sum(ex_rxn) / len(ex_rxn)
+					cognitive_hr_sums['ex_rxn'][hr] += stat
+					cognitive_hr_totals['ex_rxn'].append(stat)
 					cognitive_hr_totals['ex_rxn_sd'].append(std(ex_rxn))
 
 				if choice_rxn == []:
 					cognitive_hr_totals['choice_rxn'].append(0)
 					cognitive_hr_totals['choice_rxn_sd'].append(0)
 				else:
-					val_dummy = sum(choice_rxn) / len(choice_rxn)
-					cognitive_hr_sums['choice_rxn'][hr] += val_dummy
-					cognitive_hr_totals['choice_rxn'].append(val_dummy)
+					stat = sum(choice_rxn) / len(choice_rxn)
+					cognitive_hr_sums['choice_rxn'][hr] += stat
+					cognitive_hr_totals['choice_rxn'].append(stat)
 					cognitive_hr_totals['choice_rxn_sd'].append(std(choice_rxn))
 
 				if ov_rxn == []:
 					cognitive_hr_totals['ov_rxn'].append(0)
 					cognitive_hr_totals['ov_rxn_sd'].append(0)
 				else:
-					val_dummy = sum(ov_rxn) / len(ov_rxn)
-					cognitive_hr_sums['ov_rxn'][hr] += val_dummy
-					cognitive_hr_totals['ov_rxn'].append(val_dummy)
+					stat = sum(ov_rxn) / len(ov_rxn)
+					cognitive_hr_sums['ov_rxn'][hr] += stat
+					cognitive_hr_totals['ov_rxn'].append(stat)
 					cognitive_hr_totals['ov_rxn_sd'].append(std(ov_rxn))
 
 				if corr_rxn == []:
 					cognitive_hr_totals['corr_rxn'].append(0)
 					cognitive_hr_totals['corr_std'].append(0)
 				else:
-					val_dummy = average(corr_rxn)
-					cognitive_hr_sums['corr_rxn'][hr] += val_dummy
-					cognitive_hr_totals['corr_rxn'].append(val_dummy)
+					stat = average(corr_rxn)
+					cognitive_hr_sums['corr_rxn'][hr] += stat
+					cognitive_hr_totals['corr_rxn'].append(stat)
 					cognitive_hr_totals['corr_std'].append(std(corr_rxn))
 
 				if incorr_rxn == []:
-					cognitive_hr_totals['incorr_rxn'].append(random.randint(0,20))
+					cognitive_hr_totals['incorr_rxn'].append(0)
 					cognitive_hr_totals['incorr_std'].append(0)
 				else:
-					val_dummy = average(incorr_rxn)
-					cognitive_hr_sums['incorr_rxn'][hr] += val_dummy
-					cognitive_hr_totals['incorr_rxn'].append(val_dummy)
+					stat = average(incorr_rxn)
+					cognitive_hr_sums['incorr_rxn'][hr] += stat
+					cognitive_hr_totals['incorr_rxn'].append(stat)
 					cognitive_hr_totals['incorr_std'].append(std(incorr_rxn))
-				'''
+
 			except KeyError:
 
-				cognitive_hr_totals['comp_pellets'].append(random.randint(12))	 # comp_pellets
-				cognitive_hr_totals['incomp_pellets'].append(random.randint(12)) # incomp_pellets
+				cognitive_hr_totals['comp_pellets'].append(comp_pellets)
+				cognitive_hr_totals['incomp_pellets'].append(incomp_pellets)
 
-				val_dummy = 0
+				stat = 0
 				# add simulated values
-				val_dummy = random.randint(100)	#100.0*corr/(corr + incorr))
-				cognitive_hr_totals['succ_rate'].append(val_dummy)
-				cognitive_hr_sums['succ_rate'][hr] += val_dummy
+				stat = 100.0 * corr/(corr + incorr))
+				cognitive_hr_totals['succ_rate'].append(stat)
+				cognitive_hr_sums['succ_rate'][hr] += stat
 
-				val_dummy = random.randint(100)	#100.0 * float(average(comp_succ_rate))
-				cognitive_hr_sums['comp_succ_rate'][hr] += val_dummy
-				cognitive_hr_totals['comp_succ_rate'].append(val_dummy)
+				stat = 100.0 * float(average(comp_succ_rate))
+				cognitive_hr_sums['comp_succ_rate'][hr] += stat
+				cognitive_hr_totals['comp_succ_rate'].append(stat)
 
-				val_dummy = random.randint(100)	#100.0 * float(average(incomp_succ_rate))
-				cognitive_hr_sums['incomp_succ_rate'][hr] += val_dummy
-				cognitive_hr_totals['incomp_succ_rate'].append(val_dummy)
-				'''
-				val_dummy = sum(ex_rxn) / len(ex_rxn)
-				cognitive_hr_sums['ex_rxn'][hr] += val_dummy
-				cognitive_hr_totals['ex_rxn'].append(val_dummy)
+				stat = 100.0 * float(average(incomp_succ_rate))
+				cognitive_hr_sums['incomp_succ_rate'][hr] += stat
+				cognitive_hr_totals['incomp_succ_rate'].append(stat)
+
+				stat = sum(ex_rxn) / len(ex_rxn)
+				cognitive_hr_sums['ex_rxn'][hr] += stat
+				cognitive_hr_totals['ex_rxn'].append(stat)
 				cognitive_hr_totals['ex_rxn_sd'].append(std(ex_rxn))
 
-				val_dummy = sum(choice_rxn) / len(choice_rxn)
-				cognitive_hr_sums['choice_rxn'][hr] += val_dummy
-				cognitive_hr_totals['choice_rxn'].append(val_dummy)
+				stat = sum(choice_rxn) / len(choice_rxn)
+				cognitive_hr_sums['choice_rxn'][hr] += stat
+				cognitive_hr_totals['choice_rxn'].append(stat)
 				cognitive_hr_totals['choice_rxn_sd'].append(std(choice_rxn))
 
-				val_dummy = sum(ov_rxn) / len(ov_rxn)
-				cognitive_hr_sums['ov_rxn'][hr] += val_dummy
-				cognitive_hr_totals['ov_rxn'].append(val_dummy)
+				stat = sum(ov_rxn) / len(ov_rxn)
+				cognitive_hr_sums['ov_rxn'][hr] += stat
+				cognitive_hr_totals['ov_rxn'].append(stat)
 				cognitive_hr_totals['ov_rxn_sd'].append(std(ov_rxn))
 
-				val_dummy = average(corr_rxn)
-				cognitive_hr_sums['corr_rxn'][hr] += val_dummy
-				cognitive_hr_totals['corr_rxn'].append(val_dummy)
+				stat = average(corr_rxn)
+				cognitive_hr_sums['corr_rxn'][hr] += stat
+				cognitive_hr_totals['corr_rxn'].append(stat)
 				cognitive_hr_totals['corr_std'].append(std(corr_rxn))
 
-				val_dummy = average(incorr_rxn)
-				cognitive_hr_sums['incorr_rxn'][hr] += val_dummy
-				cognitive_hr_totals['incorr_rxn'].append(val_dummy)
+				stat = average(incorr_rxn)
+				cognitive_hr_sums['incorr_rxn'][hr] += stat
+				cognitive_hr_totals['incorr_rxn'].append(stat)
 				cognitive_hr_totals['incorr_std'].append(std(incorr_rxn))
-				'''
+
 
 	cognitive_hr_avgs = { f: [float(s)/float(no_days) for s in \
 						  cognitive_hr_sums[f]] for f in cognitive_fields }
@@ -569,7 +594,7 @@ def CalcHourlyCognitiveStats(cognitive_monk_dict):
 ##	saves Average Activity, Feeding, Cognitive Test Success,
 ##	and Scale plots to "PCRL Group Report YYYYMMDD.pdf"
 ##
-def GenerateGroupReport(dispense_caloric_density):
+def GenerateGroupPlots(dispense_caloric_density):
 
 	pp = PdfPages(REPORT_DIR + 'PCRL Group Report ' + YESTERDAY_STR + '.pdf')
 
@@ -586,12 +611,12 @@ def GenerateGroupReport(dispense_caloric_density):
 	## Fill Stats Data Structs
 	for monkey in STATIONS:
 
-		random.seed() 	# for simulating data
+		#random.seed() 	# for simulating data
 		# activity daily stats
 		activity_avg[monkey], activity_std[monkey] = [], []
 		for act_tuple_list in activity[monkey].values():
 			act_vals = [t[1] for t in act_tuple_list]
-			activity_avg[monkey].append(random.randint(0, 5400)) #average(act_vals))
+			activity_avg[monkey].append(average(act_vals))
 			activity_std[monkey].append(std(act_vals))
 
 		# feeder daily stats
@@ -605,9 +630,9 @@ def GenerateGroupReport(dispense_caloric_density):
 				elif feeder_num == 1: feed_count_1 += 1
 				elif feeder_num == 2: feed_count_2 += 1
 			#simulate feeder counts
-			feed_count_0 = random.randint(0,60)
+			'''feed_count_0 = random.randint(0,60)
 			feed_count_1 = random.randint(0,60)
-			feed_count_2 = random.randint(0,60)
+			feed_count_2 = random.randint(0,60)'''
 			##
 			feeder_counts[monkey]['0'].append(feed_count_0)
 			feeder_counts[monkey]['1'].append(feed_count_1)
@@ -621,7 +646,7 @@ def GenerateGroupReport(dispense_caloric_density):
 		scale_avg[monkey], scale_std[monkey] = [], []
 		for scale_tuple_list in scale[monkey].values():
 			scale_vals = [t[1] for t in scale_tuple_list]
-			scale_avg[monkey].append(random.randint(10, 15)) #average(scale_vals))
+			scale_avg[monkey].append(average(scale_vals))
 			scale_std[monkey].append(std(scale_vals))
 
 
@@ -663,10 +688,7 @@ def GenerateGroupReport(dispense_caloric_density):
 			l1, = ax.plot(activity_avg[monkey])
 			l2, = ax.plot(act_avg_line)
 
-			cool = range(no_days)[1:]
-			cool = cool + [cool[-1] + 1]
-			cool = map(lambda x: str(x), cool)
-			ax.set_xticklabels(cool)
+			ax.set_xticklabelsrange(no_days))
 
 			fontP = FontProperties()
 			fontP.set_size(6)
@@ -732,21 +754,18 @@ def GenerateGroupReport(dispense_caloric_density):
 
 			l1, = ax2.plot(feed_sums[monkey])
 			l2, = ax2.plot(avg_line)
-			l3, = ax2.plot([ ct * dispense_caloric_density['feeder_0'] for ct \
+			l3, = ax2.plot([ ct * dispense_caloric_density[0] for ct \
 							 in feeder_counts[monkey]['0']])
-			l4, = ax2.plot([ ct * dispense_caloric_density['feeder_1'] for ct \
+			l4, = ax2.plot([ ct * dispense_caloric_density[1] for ct \
 							 in feeder_counts[monkey]['1']])
-			l5, = ax2.plot([ ct * dispense_caloric_density['feeder_2'] for ct \
+			l5, = ax2.plot([ ct * dispense_caloric_density[2] for ct \
 							 in feeder_counts[monkey]['2']])
 
 			leg = plt.figlegend((l1,l2,l3,l4,l5),
 					('Total','Average','Feeder 0','Feeder 1','Feeder 2'), \
 					'upper right', prop=fontP)
 
-			cool = range(no_days)[1:]
-			cool = cool + [cool[-1]+1]
-			cool = map(lambda x:str(x), cool)
-			ax2.set_xticklabels(cool)
+			ax2.set_xticklabels(range(no_days))
 
 			ax2.set_title(monkey, fontsize=10)
 
@@ -815,15 +834,12 @@ def GenerateGroupReport(dispense_caloric_density):
 
 			ax3.set_xlabel('Day', fontsize=7)
 			# plot number of pellets monkey collected from cognitive test (feeder 2)
-			ax32.plot([ ct * dispense_caloric_density['feeder_2'] for ct \
+			ax32.plot([ ct * dispense_caloric_density[2] for ct \
 						in feeder_counts[monkey]['2']], 'm')
 			ax32.set_ylabel('Calories', fontsize=7, color='m')
 			plt.ylim(ymin=0, ymax=1.25*max(feeder_counts[monkey]['2']))
 
-			cool = range(no_days)[1:]
-			cool = cool + [cool[-1]+1]
-			cool = map(lambda x: str(x), cool)
-			ax3.set_xticklabels(cool)
+			ax3.set_xticklabels(range(no_days))
 			ax32.yaxis.set_major_locator(MaxNLocator(10))
 
 	fig3.subplots_adjust(wspace=1.0, hspace=0.85)
@@ -870,10 +886,7 @@ def GenerateGroupReport(dispense_caloric_density):
 			plt.figlegend((l1,l2,l3), ('Example','Correct','Incorrect'), \
 						  'upper right', prop=fontP)
 
-			cool = range(no_days)[1:]
-			cool = cool + [cool[-1]+1]
-			cool = map(lambda x: str(x), cool)
-			ax4.set_xticklabels(cool)
+			ax4.set_xticklabels(range(no_days))
 
 			#if len(cognitive[monkey]) != 11:
 			#	ax4.xaxis.set_major_locator(LinearLocator(3))
@@ -933,10 +946,7 @@ def GenerateGroupReport(dispense_caloric_density):
 			l1, = ax5.plot(scale_avg[monkey])
 			l2, = ax5.plot(scale_avg_line)
 
-			cool = range(no_days)[1:]
-			cool = cool + [cool[-1] + 1]
-			cool = map(lambda x: str(x), cool)
-			ax5.set_xticklabels(cool)
+			ax5.set_xticklabels(range(no_days))
 
 			fontP = FontProperties()
 			fontP.set_size(6)
@@ -977,7 +987,7 @@ def GenerateGroupReport(dispense_caloric_density):
 ##	For each monkey, saves Hourly Activity, Hourly Feeding and
 ##	Cognitive Test Success plots to "PCRL Individual Report [MID] YYYYMMDD.pdf"
 ##
-def GenerateIndividualReports(feeding_hour_threshold):
+def GenerateIndividualPlots(feeding_hour_threshold):
 
 	# transform tables to dict, with granularity to hours
 	activity = TableToHourlyDict(TABLES['activity'])
@@ -996,8 +1006,6 @@ def GenerateIndividualReports(feeding_hour_threshold):
 	# Calculate Hourly Stats
 	#
 		random.seed() 	# for simulating data
-
-
 		## Activity
 		activity_hr_totals[monkey] = []
 		hr_totals = [0] * 24
@@ -1015,7 +1023,7 @@ def GenerateIndividualReports(feeding_hour_threshold):
 				# and add to hr_totals at that hr's index
 				try:
 					# get total activity for that hour
-					hr_total = random.randint(2000, 6000) 	#sum([tup[1] for tup in act_dict[hr_str]])
+					hr_total = sum([tup[1] for tup in act_dict[hr_str]])
 
 					# append total to totals
 					activity_hr_totals[monkey].append(hr_total)
@@ -1061,9 +1069,9 @@ def GenerateIndividualReports(feeding_hour_threshold):
 					pass
 
 			# simulate hr_cts
-			hr_cts['0'] = [random.randint(15) for c in hr_cts['0']]
+			'''hr_cts['0'] = [random.randint(15) for c in hr_cts['0']]
 			hr_cts['1'] = [random.randint(15) for c in hr_cts['1']]
-			hr_cts['2'] = [random.randint(15) for c in hr_cts['2']]
+			hr_cts['2'] = [random.randint(15) for c in hr_cts['2']]'''
 
 			# append hr counts for that date to totals
 			feeder_hr_totals[monkey]['0'].extend(hr_cts['0'])
@@ -1085,15 +1093,9 @@ def GenerateIndividualReports(feeding_hour_threshold):
 			no_days += 1
 
 		# calc and store avgs for each feeder
-		feeder_hr_avgs[monkey] = {'0': [random.randint(15*no_days)/no_days for \
-										s in hr_sums['0']],
-										#[s/no_days for s in hr_sums['0']], \
-								  '1': [random.randint(15*no_days)/no_days for \
-						  				s in hr_sums['1']],
-										#[s/no_days for s in hr_sums['1']], \
-								  '2': [random.randint(15*no_days)/no_days for \
-						  				s in hr_sums['2']]}
-										#[s/no_days for s in hr_sums['2']]}
+		feeder_hr_avgs[monkey] = {'0': [s/no_days for s in hr_sums['0']], \
+								  '1': [s/no_days for s in hr_sums['1']], \
+								  '2': [s/no_days for s in hr_sums['2']]}
 
 
 		## Cognitive
@@ -1227,38 +1229,121 @@ def GenerateIndividualReports(feeding_hour_threshold):
 	return
 
 
+##
+##
+def GenerateReports():
+	# import observation data from tables
+	observations = TableToDailyDict(TABLES['observation'])
+
+	# for each monkey
+	for monk, data in MONKEYS.items():
+		mid = monk
+		dob = data['dob']
+		sex = data['sex']
+
+		# generate observational report  in HTML
+		pg = HTML()
+		body = pg.body(style="font-family:Sans-Serif")
+		header = body.header()
+		header.h2(date_str + "REPORT for " + mid, style="text-align:center")
+		header.img(width="120", height="50", src="./bu_logo.jpg")
+
+		p = header.p(style="text-align:center;font-size:75%")
+		p.b.text("Primate Circadian Rhythm Laboratory"); p.br;
+		p.text("Dept. of Anatomy and Neurobiology"); p.br;
+		p.text("Boston University School of Medicine"); p.br;
+		p.text("72 East Concord St (L 1004)"); p.br;
+		p.text("Boston, Massachusetts 02118"); p.br;
+		p.text("617-638-4200"); p.br;
+		p.a("zhdanova@bu.edu", href="mailto:zhdanova@bu.edu")
+
+		table = body.section().table(style="margin-left:130px;", cellspacing="0", cellpadding="0")
+		rows = [("MID: " + mid, "Report No: " + str(0001)), \
+				("DOB: " + dob, "Sex: M"), \
+				("Compiled by: " + lab_member, "Datetime: " + datetime_str)]
+		for row in rows:
+			r = table.tr()
+			r.td(row[0])
+			r.td(row[1])
+
+		body.hr()
+
+		sec = body.section()
+		sec.h2("Observations:")
+		sec.p("...")
+
+		r = body.table.tr()
+		r.td("Electronically Signed By:")
+		r.td(lab_member)
+		r.td(datetime_str)
+
+		body.footer.h2("END REPORT", style="text-align:center")
+
+		#write HTML to pdf
+		input1 = open(REPORT_DIR + mid +"-observational.pdf", "w+r+b")
+		pisa.showLogging()
+		pisa.CreatePDF(str(pg), dest=input1)
+
+		input2 = open(REPORT_DIR + 'PCRL ' + monk + \
+			  ' Report ' + YESTERDAY_STR + '.pdf', "rb")
+
+		merger = PdfFileMerger()
+		merger.append(input1)
+		merger.append(input2)
+		output = open(REPORT_DIR + 'PCRL ' + monk + \
+			  ' Report ' + YESTERDAY_STR + '.pdf', "wb")
+		merger.write(output)
+
+
 #####################################################################
 # 								Main 								#
 #####################################################################
 
-#read options from config file
+# read options from config file
 opts = {}
-config_f = open('config.txt', 'r')
+config_f = open(base_dir + 'config.json', 'r')
 opts = json.load(config_f)
 config_f.close()
 
+MONKEYS = opts['monkey_data']
+STATIONS = [m['station'] for m in MONKEYS.values()]
+DB_PATH = base_dir + 'PCRL_phizer_study.db'
 
-## GLOBALS
-STATIONS = map(str, range(401, 405) + range(501, 509) + range(601, 609) + \
-					range(801, 805))
-DATES = [(datetime.datetime.today() - datetime.timedelta(days=1)) - \
-		  datetime.timedelta(days=d) for d in range(opts['days'] + 1)]
-YESTERDAY_STR = DATES[0].strftime('%Y%m%d')
-DAYS_STR = DATES[-1].strftime('%b %d, %Y') + ' to ' + \
-		   DATES[0].strftime('%b %d, %Y')
-REPORT_DIR = opts['report_dir'] + YESTERDAY_STR + '/'
+# Import data based on configuration
+TABLES = {};  DATES = []; YESTERDAY_STR = '';
+if opts['report_custom']:
+	from_ = opts['custom_dates']['from']
+	to_ = opts['custom_dates']['to']
+
+	TABLES = ImportData(from_, to_)
+
+	days = (datetime.datetime.strptime(to_, '%m-%d-%Y') - datetime.datetime.strptime(from_, '%m-%d-%Y')).days
+	DATES = [(datetime.datetime.strptime(to_, '%m-%d-%Y') - datetime.timedelta(days=d)) \
+			  for d in list(reversed(range(days + 1)))]
+	YESTERDAY_STR = DATES[0].strftime('%Y%m%d')
+
+else:
+	days = int(opts['days'])
+
+	TABLES = ImportDataForLast(days)
+
+	DATES = [(datetime.datetime.today() - datetime.timedelta(days=1)) - \
+		  datetime.timedelta(days=d) for d in list(reversed(range(days + 1)))]
+	YESTERDAY_STR = DATES[-1].strftime('%Y%m%d')
 
 
-# setup directory to save reports to
+# setup directory for saving reports
+DAYS_STR = DATES[0].strftime('%b_%d_%Y') + '-' + \
+		   DATES[-1].strftime('%b_%d_%Y')
+REPORT_DIR = base_dir + '\\reports\\' + DAYS_STR + '\\'
 if not os.access(REPORT_DIR, os.F_OK):
 	os.mkdir(REPORT_DIR)
 
-
-# Import data
-TABLES = ImportDataForLast(opts['days'])
-
 # generate group summary plots
-GenerateGroupReport(opts['dispense_caloric_density'])
+GenerateGroupPlots([f['calories_per_dispense'] for f in opts['feeders'].values()])
 
 # generate individual summary plots
-GenerateIndividualReports(opts['feeding_hour_threshold'])
+GenerateIndividualPlots(opts['feeding_hour_threshold'])
+
+# generate full reports
+#GenerateReports()

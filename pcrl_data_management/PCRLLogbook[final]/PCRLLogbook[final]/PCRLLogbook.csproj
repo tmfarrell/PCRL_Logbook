@@ -75,12 +75,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Comment.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Comment.Designer.cs">
-      <DependentUpon>Comment.cs</DependentUpon>
-    </Compile>
     <Compile Include="Config.cs" />
     <Compile Include="CreateAccountForm.cs">
       <SubType>Form</SubType>
@@ -112,9 +106,7 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Comment.resx">
-      <DependentUpon>Comment.cs</DependentUpon>
-    </EmbeddedResource>
+    <Compile Include="SuppFood.cs" />
     <EmbeddedResource Include="CreateAccountForm.resx">
       <DependentUpon>CreateAccountForm.cs</DependentUpon>
     </EmbeddedResource>
