@@ -1,1 +1,0 @@
-.\sqlite3.exe '.\PCRL_phizer_study.db'
