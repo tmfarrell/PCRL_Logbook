@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>README</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+</style>
+</head>
+<body>
+<h1>PCRL Logbook Manual</h1>
+<hr />
+<h3>OUTLINE</h3>
+<pre><code>A. Overview
+B. Directory Structure
+C. Software 
+D. Configuration
+E. Database 
+F. Working with the Database 
+G. Notes on Troubleshooting 
+H. Contact 
+</code></pre>
+
+<h3>A. OVERVIEW</h3>
+<p>The PCRL Logbook is a data management application that supports/ automates several 
+routine daily data entry and analysis tasks for this study. The intended purpose/ function of the system is three-fold: </p>
+<pre><code>(1) digital entry and storage of observational data;
+(2) efficient structured storage of project data in a central database (db); and 
+(3) daily automated data analysis and reporting.  
+</code></pre>
+
+<p>Of these, (2) was the original/ most important motivator. </p>
+<p>First, (2) allows for efficient storage of data, as db's have much smaller memory 
+footprints than flat files. Consider the current memory usage 
+of <code>'DataArchive2/'</code>, which holds this project's flat files. As of today
+(2/2/2016) it uses <code>288 GB</code>. Assuming roughly 1/3 of that is used for the data files 
+(it contains other items as well), that's about <code>83 GB</code>. Compare that to
+<code>'PCRL_2016_data_0.db'</code>, which contains the exact same data: <code>0.65 GB</code>. That's 125 times as small! 
+And this difference is not trivial, given previous memory issues. </p>
+<p>Second, and most important, having a single file contain all the data tremendously 
+simplifies analysis: no need to waste time or introduce error wrangling 
+up all the data; it's already in one place. Further, Structured Query 
+Language (<a href="https://www.khanacademy.org/computing/computer-programming/sql">SQL</a>) is a powerful read/writeable interface to the data, and adds to the analysis. (See E and F for details.)     </p>
+<p>In sum, the main purpose is to facilitate a centralized,  structured data store (in this case, an <a href="https://www.sqlite.org/cli.html">SQLite</a> db) for the study, as this adds significant value to the ultimate goal of proper analysis. And as it comes closer to that, this value will become increasingly appreciated. </p>
+<h3>B. DIRECTORY STRUCTURE</h3>
+<p>Note: ignore (and do not modify) files/ directories not listed here. </p>
+<pre><code>C:\Users\Server1\Desktop\PCRL_Logbook\
+# base directory    
+
+    README.md
+    # the markdown version
+
+    README.html
+    # the HTML version (*use this one*)
+
+    config.json
+    # configuration file (see D for details)
+
+    scripts\
+    # contains all scripts, mostly python(.py) and powershell(.ps1)
+    # as well as some apps for dealing with the database 
+
+        update_db.py 
+        # parses flat files and transfers data to db
+
+        GenerateDailyReports.py
+        # generates reports from db
+
+        update_db_n_report.ps1
+        # calls 'update_db.py' and 'GenerateDailyReports.py' 
+        # executed by Task Manager at 9am each morning 
+
+        SqliteBrower
+        # this is a user-friendly way to work with the db
+        # double-click and open the db using 'Open Database' button
+
+        access_db.ps1
+        # right-click this file and select &quot;Run with Powershell&quot; to
+        # open the db in an SQLite terminal
+
+        sqlite3.exe
+        # double-click to open an SQLite terminal
+
+        init_db.py
+        # creates an empty database with project's schema
+        # (see E for details on schema)
+
+        Configure.py
+        # resets config file
+        # for use when config file has been ill-formatted, 
+        # or permanently deleted/ disfigured 
+
+        base_config.json
+        # basic config file used by 'Configure.py' to 
+        # reset the config file in the base dir
+
+        update_db_from_laptops.ps1
+        # old powershell script for transferring raw data
+        # across the network from laptops to db 
+
+    PCRLLogbook[final]\
+    # main directory of PCRL Logbook C# application 
+    # (see C for more details)
+
+    monk_data\
+    # excel and text files with some monkey/diet data
+
+    libs\
+    # a few python modules, dependencies of report script
+</code></pre>
+
+<h3>C. SOFTWARE</h3>
+<p>The system has three components, whose functions correspond to those outlined in A. </p>
+<ol>
+<li>
+<h4>Observational Data Recording</h4>
+<pre><code>Directory: &quot;PCRL_Logbook\PCRLLogbook[final]\PCRLLogbook[final]\&quot;    
+File:      &quot;PCRL_Logbook\PCRLLogbook[final]\PCRLLogbook[final]\bin\Release\PCRLLogbook.exe&quot;
+# Note: a short-cut to the exe exists at &quot;C:\Users\Server1\Desktop\PCRLLogbook.exe-Shortcut&quot;
+</code></pre>
+
+<p>PCRL_Logbook.exe is a Windows application written in C#. It allows observational data to be recorded digitally, via data logging forms with simple interfaces. The main intent is to allow a lab member outside the control room to record data through TeamViewer.   
+</p>
+<p>For a more detailed description, see its dedicated <code>README</code> at
+<code>&quot;C:\Users\Server1\Desktop\PCRL_Logbook\PCRLLogbook[final]\README.html&quot;</code></p>
+</li>
+<li>
+<h4>Importing Data in DB</h4>
+<pre><code>File: &quot;PCRL_Logbook\scripts\update_db.py&quot;
+</code></pre>
+
+<p>[Description here.]</p>
+</li>
+<li>
+<h4>Report Generation</h4>
+<pre><code>File: &quot;PCRL_Logbook\scripts\GenerateDailyReports.py&quot;
+</code></pre>
+
+<p>[Description here.]</p>
+</li>
+</ol>
+<h3>D. CONFIGURATION</h3>
+<ol>
+<li>
+<h4>Overview</h4>
+<p>The config file is a JSON (JavaScript Object Notation) file, which is a popular file format for storing software configurations, and resource description framework (RDF) data more generally. Basically, it consists of a list of <code>&quot;&lt;field&gt;&quot;: &lt;value&gt;</code> pairs, where each field is a string (i.e. has quotes around it) and each value is one of various data types (strings, arrays/ lists, dictionaries, etc). For more information, see <a href="www.json.org">www.json.org</a>. </p>
+</li>
+<li>
+<h4>Notes on Editing</h4>
+<p>The main idea is: <strong>leave all formatting as is, only change value</strong>. For instance, say you want to change where reports are saved <code>report_dir</code> from <code>&quot;E:\\Dropbox\\PCRL Reports\\&quot;</code> to <code>&quot;E:\\OtherDir\\PCRL_Reports&quot;</code>. Only change what is inside the quotes, and make sure to keep the trailing comma as this separates <code>&quot;&lt;field&gt;&quot;:&lt;value&gt;, &quot;&lt;field&gt;&quot;:&lt;value&gt;</code> pairs. The change would look like: </p>
+<pre><code># from
+&quot;report_dir&quot;: &quot;E:\\Dropbox\\PCRL_Reports&quot;,
+# to
+&quot;report_dir&quot;: &quot;E:\\Some_Other_Dir\\New_PCRL_Report_Dir&quot;,
+</code></pre>
+
+<p>Another example, say you want to change how many days are included in the daily reports <code>days</code> from <code>10</code> to <code>5</code>. Here there are no quotes around the value (because it's numeric not string type); so to keep the format the same, just replace the plain number. </p>
+<pre><code># from
+&quot;days&quot;: 10,
+# to
+&quot;days&quot;: 5,
+</code></pre>
+
+<p>Finally, if the value is a list (i.e. enclosed by brackets with multiple subvalues), preserve the structure and only change the subvalues inside. </p>
+<pre><code># from 
+&quot;behavior_list&quot;: [
+    &quot;BAR&quot;, 
+    &quot;pacing&quot;, 
+    &quot;self-injury&quot;
+],
+# to 
+&quot;behavior_list&quot;: [
+    &quot;bad&quot;
+],
+</code></pre>
+
+<p>And so on.</p>
+<p>If it happens that the config file gets ill-formatted or deleted, run </p>
+<pre><code>C:\Python27\python.exe C:\Users\Server1\Desktop\PCRL_Logbook\scripts\Configure.py
+</code></pre>
+
+<p>in Powershell. This will generate a new config file in the base directory. Only do this as a last resort as this will result in the loss of all changes to the config file.  
+</p>
+</li>
+<li>
+<h4>Fields</h4>
+<pre><code>&quot;days&quot;:  
+- How many days from yesterday do you want included in the daily reports? 
+- Any positive integer that makes sense (e.g. 5, 7, 14). 
+
+&quot;data_dir&quot;: 
+- In which directory are the raw/ flat data files (e.g. .FeedTest.txt, etc) stored? 
+- Any valid path within Server1 or on the network (e.g. &quot;Z:\\&quot;).
+
+&quot;db_file&quot;:
+- What is the path (i.e. exact directory location) of the database file? 
+- Any valid path within Server1 or network (e.g. &quot;F:\\pcrl_logbook_data\\PCRL_2016_data_0.db&quot;). 
+
+&quot;report_dir&quot;:
+- In which directory do you want the reports saved? 
+- Any valid path within Server1 or network. 
+
+&quot;report_custom&quot;:
+- Do you want the report program to generate reports between custom dates, instead of using 
+  the &quot;days&quot; field? 
+- Either true or false, where false means that you want to use the &quot;days&quot; field. 
+
+&quot;custom_dates&quot;: 
+- If &quot;report_custom&quot; is true, over what span of dates (&quot;from&quot;-&quot;to&quot;) do you want the report 
+  to analyze?
+- Strings of the form &quot;YYYY-MM-DD&quot; (e.g. &quot;2016-01-05&quot;), where the &quot;from&quot; date is earlier 
+  than the &quot;to&quot; date. 
+
+&quot;feeding_hour_threshold&quot;:
+- How many pellets does a monkey need to eat in an hour for that hour to be labelled 
+  &quot;feeding hour&quot;? 
+- Any positive integer that makes sense (e.g. 30, 50) 
+
+&quot;behavior_list&quot;:
+- What behaviors do you want listed in the behavior field of the observational data recording 
+  form (in PCLRLogbook.exe)? 
+- Any valid list of strings relating behaviors (e.g. ['BAR', 'pacing'], etc)
+
+&quot;training_list&quot;: 
+- Same as &quot;behavior_list&quot;, except relating training. 
+
+&quot;stool_list&quot;: 
+- Same as &quot;behavior_list&quot;, except relating stool.
+
+&quot;equipment_list&quot;: 
+- What equipment do you want listed so you can record malfunctions/ deficiencies? 
+- Otherwise, same as &quot;behavior_list&quot; except relating equipment.  
+
+&quot;feed_data&quot;: 
+- What foods do you want to be able to include in the &quot;supp_feed_templates&quot; and the 
+  &quot;feed_in_feeders&quot; fields? 
+- Dictionaries of the form, where the field describes what the value should quantify: 
+    &quot;&lt;some food&gt;&quot;: {
+        &quot;category&quot;: &quot;&lt;some food category (e.g. &quot;fruit&quot;)&gt;&quot;,
+        &quot;water_percent&quot;: &quot;&lt;some fraction of 1 (e.g. &quot;0.77&quot;)&gt;&quot;,
+        &quot;prot_cals_per_gram&quot;: &quot;&lt;some integer or float val (e.g. &quot;0.064&quot;)&gt;&quot;,
+        &quot;fiber_percent&quot;: &quot;&lt;some fraction of 1 (e.g. &quot;0.03&quot;)&gt;&quot;,
+        &quot;fat_cals_per_gram&quot;: &quot;&lt;some integer or float val (e.g. &quot;2.05&quot;)&gt;&quot;,
+        &quot;carb_cals_per_gram&quot;: &quot;&lt;some integer or float val (e.g. &quot;1&quot;)&gt;&quot; 
+    }
+    Note: note the quotations around the numerics; these happen to be string datatypes, 
+    but their values need be numeric, else the report generator will throw an error. 
+
+&quot;feed_in_feeders&quot;: 
+- Which foods from &quot;feed_data&quot; are being dispensed from each feeder? 
+- Must be of the form: 
+    &quot;feeder0&quot;: &quot;&lt;some food in &quot;feed_data&quot;&gt;&quot;, 
+    &quot;feeder1&quot;: &quot;&lt;some food in &quot;feed_data&quot;&gt;&quot;,
+    &quot;feeder2&quot;: &quot;&lt;some food in &quot;feed_data&quot;&gt;&quot;
+
+
+&quot;supp_feed_templates&quot;: 
+- What custom templates do you want to be able to choose from when recording supplemental feeds 
+  in PCRLLogbook? 
+- Must be of the form, where the numerical values indicate grams of that food: 
+    &quot;&lt;some name for the template&gt;&quot;: { 
+        &quot;&lt;some food in &quot;feed_data&quot;&gt;: &lt;some float (e.g 1.3)&gt;, 
+        &quot;&lt;some other food in &quot;feed_data&quot;&gt;&quot;: &lt;some float (e.g. 2.6)&gt;
+        ...
+    }
+    Note: Every template must have at least one food.  
+
+
+&quot;monkey_data&quot;: 
+- Basic information for each monkey? (Note: this should only need to be altered when new monkeys 
+  are added to the study.) 
+- Dictionaries of the form: 
+    &quot;&lt;monkey id&gt;&quot;: {
+      &quot;dob&quot;: &quot;&lt;MM/DD/YYYY&gt;&quot;,
+      &quot;station&quot;: &quot;&lt;station #&gt;&quot;,
+      &quot;room&quot;: &quot;&lt;room # (e.g. &quot;W718&quot;)&gt;&quot;,
+      &quot;sex&quot;: &quot;&lt;either &quot;M&quot; or &quot;F&quot;&gt;&quot;
+    }
+</code></pre>
+
+</li>
+</ol>
+<h3>E. DATABASE</h3>
+<ol>
+<li>
+<h4>Working with the db</h4>
+<p><code>SqliteBrowser</code> is a user-friendly interfaceß for <code>SQLite</code> dbs. It allows for easy data browsing, query execution and basic plotting. To view the project db:    
+</p>
+<ul>
+<li>Open <code>SqliteBrowser</code> in <code>&quot;C:\Users\Server1\Desktop\PCRL_Logbook\scripts\&quot;</code>. </li>
+<li>Select <code>Open Database</code> and browse to <code>&quot;F:\pcrl_logbook_data\PCRL_2016_data_0.db&quot;</code>.</li>
+</ul>
+<p>The primary tabs of interest are <code>Browse Data</code> and <code>Execute SQL</code>. Also see the secondary tabs at bottom right that are useful <code>SQL Log</code> and <code>Plots</code>. 	</p>
+</li>
+<li>
+<h4>Programmatically querying the db</h4>
+<p>Although <code>SqliteBrowser</code> is very convenient and a nice interface to test queries with, as the db gets bigger it will be prohibitively harder to work with. On the other hand, <code>SQLite</code>'s command-line interface is fast and useful for automating data export to other formats (such as <code>csv</code> aka <code>xlxs</code>). For example, to export feeding data for monkey <code>JB67</code> on <code>2016-03-15</code> to <code>csv</code>, open <code>PCRL_Logbook\scripts\sqlite3.exe</code> and do:  
+</p>
+<pre><code>SQLite version 3.8.10.2 2015-05-20 18:17:19
+Enter &quot;.help&quot; for usage hints.
+Connected to a transient in-memory database. 
+Use &quot;.open FILENAME&quot; to reopen a persistent database. 
+sqlite&gt; .open F:\\pcrl_logbook_data\\PCRL_2016_data_0.db
+sqlite&gt; .tables
+activity                labroomlog                  suppfeed
+cognitive               loginlog                    table_data_monk_yes_data
+entertain               observation 
+feeder                  scale                       
+sqlite&gt; .mode csv
+sqlite&gt; .headers on
+sqlite&gt; .output E:\JB67_20160315_feed.csv
+sqlite&gt; SELECT * FROM feeder WHERE mid=&quot;JB67&quot; AND date_time LIKE &quot;%2016-03-16%&quot;; 
+sqlite&gt; .quit
+</code></pre>
+
+<p>For a detailed tutorial on <code>SQLite</code>, see <code>PCRL_Logbook\libs\SQLite.pdf</code>. </p>
+<p><code>Python</code> also has a very easy to work with interface for <code>SQLite</code>. Here's the same example in <code>Python</code>. Open <code>Windows Powershell</code> and do: </p>
+<pre><code>C:\Users\Server1&gt; C:\Python27\python.exe
+Python 2.7.8 (default, Jun 30 2014, 16:03:49) [MSC v.1500 32 bit (Intel)] on win32
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information. 
+&gt;&gt;&gt; import sqlite3
+&gt;&gt;&gt; conn = sqlite3.connect('F:\\pcrl_logbook_data\PCRL_2016_data_0.db')
+&gt;&gt;&gt; c = conn.cursor()
+&gt;&gt;&gt; query = c.execute('SELECT * FROM feeder WHERE mid=&quot;JB67&quot; AND date_time LIKE &quot;%2016-03-16%&quot;')
+&gt;&gt;&gt; result = query.fetchall()
+&gt;&gt;&gt; print result
+</code></pre>
+
+<p>See documentation <a href="https://docs.python.org/2/library/sqlite3.html">here</a>.  
+</p>
+</li>
+</ol>
+<h3>G. CONTACT</h3>
+<p>With any errors/ bugs/ questions, feel free to contact <a href="&#x6d;ai&#x6c;&#x74;&#x6f;&#x3a;t&#102;&#x61;&#114;r&#101;&#x6c;&#x6c;&#x30;&#x31;&#x40;&#103;&#109;&#97;&#105;&#108;&#46;&#x63;o&#x6d;">&#x74;&#102;&#x61;&#x72;&#x72;&#x65;&#108;&#108;0&#x31;&#x40;&#103;&#x6d;&#97;&#x69;&#x6c;&#x2e;&#x63;o&#x6d;</a>. </p>
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->

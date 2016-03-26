@@ -1,0 +1,12 @@
+\\ad.bu.edu\dfs\istvdi\Users\tmf\Documents\Visual Studio 2008\Projects\PCRLLogbook[final]\PCRLLogbook[final]\bin\Debug\PCRLLogbookDB.accdb
+\\ad.bu.edu\dfs\istvdi\Users\tmf\Documents\Visual Studio 2008\Projects\PCRLLogbook[final]\PCRLLogbook[final]\bin\Debug\PCRLLogbook[final].exe.config
+\\ad.bu.edu\dfs\istvdi\Users\tmf\Documents\Visual Studio 2008\Projects\PCRLLogbook[final]\PCRLLogbook[final]\bin\Debug\PCRLLogbook[final].exe
+\\ad.bu.edu\dfs\istvdi\Users\tmf\Documents\Visual Studio 2008\Projects\PCRLLogbook[final]\PCRLLogbook[final]\bin\Debug\PCRLLogbook[final].pdb
+\\ad.bu.edu\dfs\istvdi\Users\tmf\Documents\Visual Studio 2008\Projects\PCRLLogbook[final]\PCRLLogbook[final]\obj\Debug\ResolveAssemblyReference.cache
+\\ad.bu.edu\dfs\istvdi\Users\tmf\Documents\Visual Studio 2008\Projects\PCRLLogbook[final]\PCRLLogbook[final]\obj\Debug\PCRLLogbook.LabroomForm.resources
+\\ad.bu.edu\dfs\istvdi\Users\tmf\Documents\Visual Studio 2008\Projects\PCRLLogbook[final]\PCRLLogbook[final]\obj\Debug\PCRLLogbook.LogForm.resources
+\\ad.bu.edu\dfs\istvdi\Users\tmf\Documents\Visual Studio 2008\Projects\PCRLLogbook[final]\PCRLLogbook[final]\obj\Debug\PCRLLogbook.LoginForm.resources
+\\ad.bu.edu\dfs\istvdi\Users\tmf\Documents\Visual Studio 2008\Projects\PCRLLogbook[final]\PCRLLogbook[final]\obj\Debug\PCRLLogbook.Properties.Resources.resources
+\\ad.bu.edu\dfs\istvdi\Users\tmf\Documents\Visual Studio 2008\Projects\PCRLLogbook[final]\PCRLLogbook[final]\obj\Debug\PCRLLogbook[final].csproj.GenerateResource.Cache
+\\ad.bu.edu\dfs\istvdi\Users\tmf\Documents\Visual Studio 2008\Projects\PCRLLogbook[final]\PCRLLogbook[final]\obj\Debug\PCRLLogbook[final].exe
+\\ad.bu.edu\dfs\istvdi\Users\tmf\Documents\Visual Studio 2008\Projects\PCRLLogbook[final]\PCRLLogbook[final]\obj\Debug\PCRLLogbook[final].pdb
