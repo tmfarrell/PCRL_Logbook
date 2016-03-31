@@ -7,7 +7,8 @@
 	C. Software 
 	D. Configuration
 	E. Database 
-	F. Contact 
+	F. Troubleshooting
+	G. Contact 
 
 
 
@@ -110,6 +111,11 @@ Note: ignore (and do not modify) files/ directories not listed here.
 ### C. SOFTWARE
 The system has three components, whose functions correspond to those outlined in A. 
 
+The first is a stand-alone data-logging program that may be executed at anytime. The 
+second and third are scripts that automate data storage and report generation. They are 
+executed consecutively in the task `update_db_n_report` in `Task Scheduler Library` the 
+`Task Scheduler` app.
+
 1. ####Observational Data Recording
 
 		Directory: "PCRL_Logbook\PCRLLogbook[final]\PCRLLogbook[final]\" 	
@@ -132,6 +138,9 @@ The system has three components, whose functions correspond to those outlined in
 
 	Each data type (scale, feeder and cognitive) is represented by a single db table
 	with relations corresponding to the fields of each file type. 
+
+	This should always be executed prior to running `GenerateDailyReports.py` to ensure the 
+	reports contain the most up-to-date data. 
   
 
 		
@@ -203,8 +212,7 @@ The system has three components, whose functions correspond to those outlined in
 		>>>
 	
 	This will allow you to work with the objects/data interactively and debug more easily.  
-
-		
+ 
 
 	
   
@@ -392,7 +400,22 @@ Although `SqliteBrowser` is very convenient and a nice interface to test queries
 	See documentation [here](https://docs.python.org/2/library/sqlite3.html).  
 
 
-### F. CONTACT 
+### F. Troubleshooting
+
+If reports have not been generated for some days, open `Windows Powershell` and do: 
+	
+	C:\Users\Server1> cd .\Desktop\PCRL_Logbook\scripts\
+	C:\Users\Server1\Desktop\PCRL_Logbook\scripts> .\update_db_n_report.ps1
+
+If this runs without error, then the issue is likely with `Task Scheduler` (see task 
+`update_db_n_report` in `Task Scheduler Library`).  
+
+If an error does occur, the error message will include line number and error type. See 
+[this tutorial](https://docs.python.org/2/tutorial/errors.html) for how to interpret the error; 
+and see whether it can be easily fixed. Otherwise if the error persists, see below.  
+
+
+### G. CONTACT 
 With any errors/ bugs/ questions, feel free to contact <tfarrell01@gmail.com>. 
 
  

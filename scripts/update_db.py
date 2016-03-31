@@ -20,8 +20,9 @@ import datetime
 ##
 ## MAIN
 ##
+print("\nUPDATE DB:\n")
 base_dir = "C:\Users\Server1\Desktop\PCRL_Logbook\\"
-
+print("Getting configurations...")
 # get configuration options
 opts = {}
 config_f = open(base_dir + 'config.json', 'r')
@@ -52,6 +53,7 @@ c = conn.cursor()			# and declare cursor (obj that interacts directly with db)
 
 # filter out (table,date,monk) tuples for which there is already data in the db 
 # so to not insert data from previous updates
+print("Determining which tables for which monkeys on which dates need updating in db...")
 tables = ['activity', 'cognitive', 'scale', 'feeder']
 
 table_date_monks = [(t, d, m) for t in tables \
@@ -65,7 +67,12 @@ table_date_monk_no_data = [t for t in table_date_monks \
 							
 dates_no_data = set([datetime.datetime.strptime(t[1], '%Y-%m-%d') \
 							for t in table_date_monk_no_data])
-
+print("For each date w/o data:") 
+print("\tFor each monkey:")
+print("\t\tFor each table:") 
+print("\t\t\tIf that (monkey, table, date) w/o data in db:")
+print("\t\t\t\tParsing raw files...")
+print("\t\t\t\tSaving to db...")
 for date in dates_no_data: 
 
 	d_str = date.strftime('%Y-%m-%d')
@@ -119,7 +126,7 @@ for date in dates_no_data:
 					c.executemany("INSERT INTO activity (date_time, activity, mid) VALUES (?,?,?)", activity_values)
 					c.execute("INSERT INTO table_date_monk_yes_data (date_, table_, mid) VALUES ('"+d_str+"', 'activity', '"+monkey+"')")
 				except sqlite3.IntegrityError:
-					print "The activity data provided is duplicate. Skipping..."
+					print "\t\t\t\tSkipping duplicate activity data..."
 
 		## COGNITIVE
 		if ('cognitive', d_str, monkey) in table_date_monk_no_data and feeder_dir: 
@@ -147,7 +154,7 @@ for date in dates_no_data:
 					c.executemany("INSERT INTO cognitive (date_time, time, event, mid) VALUES (?,?,?,?)", cognitive_values)
 					c.execute("INSERT INTO table_date_monk_yes_data (date_, table_, mid) VALUES ('"+d_str+"', 'cognitive', '"+monkey+"')")
 				except sqlite3.IntegrityError: 
-					print "The cognitive data provided is duplicate. Skipping..."
+					print "\t\t\t\tSkipping duplicate cognitive data..."
 	
 		## FEEDER 
 		if ('feeder', d_str, monkey) in table_date_monk_no_data and feeder_dir: 
@@ -174,7 +181,7 @@ for date in dates_no_data:
 					c.executemany("INSERT INTO feeder (date_time, rxn_time, feeder, mid) VALUES (?,?,?,?)", feeder_values)
 					c.execute("INSERT INTO table_date_monk_yes_data (date_, table_, mid) VALUES ('"+d_str+"', 'feeder', '"+monkey+"')")
 				except sqlite3.IntegrityError: 
-					print "The feeder data provided is duplicate. Skipping..."
+					print "\t\t\t\tSkipping duplicate feeder data..."
 		
 		## SCALE 
 		if ('scale', d_str, monkey) in table_date_monk_no_data and scale_dir: 
@@ -205,6 +212,7 @@ for date in dates_no_data:
 					c.executemany("INSERT INTO scale (date_time, weight, mid) VALUES (?,?,?)", scale_values)
 					c.execute("INSERT INTO table_date_monk_yes_data (date_, table_, mid) VALUES ('"+d_str+"', 'scale', '"+monkey+"')")
 				except sqlite3.IntegrityError: 
-					print "The scale data provided is duplicate. Skipping..."
+					print "\t\t\t\tSkipping duplicate scale data..."
 conn.commit()
 conn.close()
+print("\nDONE ALL.\n")

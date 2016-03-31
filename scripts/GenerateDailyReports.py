@@ -598,8 +598,10 @@ def CalcHourlyCognitiveStats(cognitive_monk_dict):
 #####################################################################
 # 								Main 								#
 #####################################################################
-
+print("\nGENERATE DAILY REPORTS:\n")
+print("Preliminaries:")
 ## Read options from config file
+print("\tParsing configurations...")
 opts = {}
 config_f = open(base_dir + 'config.json', 'r')
 opts = json.load(config_f)
@@ -612,6 +614,7 @@ STATION_MONKEYS.sort()
 DB_PATH = opts['db_file']
 
 ## Import data based on config
+print("\tImporting data...")
 TABLES = {};  DATES = []; YESTERDAY_STR = '';
 if opts['report_custom']:
 	from_ = opts['custom_dates']['from']
@@ -638,7 +641,7 @@ DAYS_STR = DATES[0].strftime('%b_%d_%Y') + '-' + \
 REPORT_DIR = opts['report_dir'] + DAYS_STR + '\\'
 if not os.access(REPORT_DIR, os.F_OK):
 	os.mkdir(REPORT_DIR)
-
+print("\tDone.")
 
 ############################
 ## Generate Group Plots   ##
@@ -647,6 +650,7 @@ if not os.access(REPORT_DIR, os.F_OK):
 ##	saves Average Activity, Feeding, Cognitive Test Success,
 ##	and Scale plots to "PCRL Group Report YYYYMMDD.pdf"
 ##
+print("\nGroup Plots:")
 num_days = len(DATES)
 feed_data = opts['feed_data']
 feed_in_feeders = opts['feed_in_feeders']
@@ -667,7 +671,7 @@ activity_avg, activity_std, feeder_counts, feed_sums = {}, {}, {}, {}
 activity_norm, supp_feed_sums, supp_feed_cts = {}, {}, {} 
 scale_avg, scale_std, cognitive_stats = {}, {}, {}
 feed_sums0, feed_sums1, feed_sums2 = {}, {}, {} 
- 
+print("\tComputing statistics...")
 feeder0_cals = sum(map(float, [(feed_data[feed_in_feeders['feeder0']]['carb_cals_per_gram']),\
 					feed_data[feed_in_feeders['feeder0']]['prot_cals_per_gram'],\
 					feed_data[feed_in_feeders['feeder0']]['fat_cals_per_gram']]))
@@ -769,7 +773,7 @@ for monkey in MONKEYS:
 		scale_avg[monkey].append(average(scale_vals))
 		scale_std[monkey].append(std(scale_vals))
 
-
+print("\tPlotting...")
 ##
 ## Activity
 ##
@@ -826,9 +830,11 @@ for n, (station, monkey) in enumerate(STATION_MONKEYS, start=1):
 
 fig.subplots_adjust(wspace=0.5, hspace=0.85)
 pp.savefig(fig)
+plt.close(fig)
 if sec_fig == True:
 	figB.subplots_adjust(wspace=0.5, hspace=0.85)
 	pp.savefig(figB)
+	plt.close(figB)
 
 ##
 ## Feeding  
@@ -922,9 +928,11 @@ for n, (station, monkey) in enumerate(STATION_MONKEYS, start=1):
 
 fig2.subplots_adjust(wspace=0.8, hspace=0.85)
 pp.savefig(fig2)
+plt.close(fig2)
 if sec_fig == True:
 	fig2B.subplots_adjust(wspace=0.8, hspace=0.85)
 	pp.savefig(fig2B)
+	plt.close(fig2B)
 	
 ##
 ## Scale 
@@ -975,9 +983,11 @@ for n, (station, monkey) in enumerate(STATION_MONKEYS, start=1):
 
 fig5.subplots_adjust(wspace=0.5, hspace=0.85)
 pp.savefig(fig5)
+plt.close(fig5)
 if sec_fig == True:
 	fig5B.subplots_adjust(wspace=0.5, hspace=0.85)
 	pp.savefig(fig5B)
+	plt.close(fig5B)
 
 	
 ##
@@ -1034,10 +1044,11 @@ for n, (station, monkey) in enumerate(STATION_MONKEYS, start=1):
 
 fig3.subplots_adjust(wspace=1.0, hspace=0.85)
 pp.savefig(fig3)
-
+plt.close(fig3)
 if sec_fig == True:
 	fig3B.subplots_adjust(wspace=1.0, hspace=0.85)
 	pp.savefig(fig3B)
+	plt.close(fig3B)
 
 ##
 ## Cognitive Rxn Times 
@@ -1087,10 +1098,13 @@ for n, (station, monkey) in enumerate(STATION_MONKEYS, start=1):
 fig4.subplots_adjust(wspace=0.5, hspace=0.85)
 
 pp.savefig(fig4)
+plt.close(fig4)
 if sec_fig == True:
 	fig4B.subplots_adjust(wspace=0.5, hspace=0.85)
 	pp.savefig(fig4B)
+	plt.close(fig4B)
 pp.close()
+print("\tDone.")
 ############################################################################
 
 
@@ -1102,6 +1116,7 @@ pp.close()
 ## For each monkey, save Hourly Activity, Hourly Feeding and
 ## Cognitive Test Success plots to "PCRL Individual Report [MID] YYYYMMDD.pdf"
 ##
+print("\nIndividual Plots:")
 # transform tables to dict, with granularity to hours
 activity = TableToHourlyDict(TABLES['activity'])
 cognitive = TableToHourlyDict(TABLES['cognitive'])
@@ -1114,7 +1129,7 @@ activity_hr_totals, activity_hr_avgs = {}, {}
 cognitive_hr_totals, cognitive_hr_avgs = {}, {}
 feeder_hr_totals, feeder_hr_avgs, feeding_hours = {}, {}, {}
 feeding_hour_threshold = opts['feeding_hour_threshold']
-
+print("\tComputing statistics...")
 for monkey in MONKEYS:
 #
 # Calculate Hourly Stats
@@ -1223,7 +1238,7 @@ for monkey in MONKEYS:
 								CalcHourlyCognitiveStats(cognitive[station])
 		except KeyError: cognitive_hr_totals[monkey], cognitive_hr_avgs[monkey] = \
 								CalcHourlyCognitiveStats({})
-
+print("\tPlotting...")
 for n, monkey in enumerate(MONKEYS):
 #
 # Plot Results
@@ -1369,9 +1384,10 @@ for n, monkey in enumerate(MONKEYS):
 
 	fig1.subplots_adjust(wspace=0.5, hspace=0.5)
 	fig2.subplots_adjust(wspace=0.5, hspace=0.5)
-	pp.savefig(fig1)
-	pp.savefig(fig2)
+	pp.savefig(fig1); pp.savefig(fig2); 
+	plt.close(fig1);  plt.close(fig2); 
 	pp.close()
+print("\tDone.")
 ######################################################################
 
 
@@ -1380,7 +1396,10 @@ for n, monkey in enumerate(MONKEYS):
 ##	(b) for each monkey, build observational report summary page, and merge 
 ## 	with monkey's individual plots
 ##
+print("\nCompile Reports:")
 ## calc group stats
+print("\tGroup Reports:")
+print("\t\tComputing summary statistics...")
 activity_max = {m: int(max(avgs)) if not np.isnan(mean(avgs)) else 0 \
 					for m, avgs in activity_norm.items()}
 #activity_var  = {m: int(std(avgs)**2) if not np.isnan(std(avgs)) else 0 \
@@ -1414,7 +1433,7 @@ feed_ranks = {m: int(len(fd_ranks)-rank+1) for m, rank in zip(feed_mean, list(fd
 ## (a) Group Report
 lab_member = "admin"
 datetime_str = datetime.datetime.now().strftime("%I:%M%p on %B %d, %Y")
-
+print("\t\tRendering group summary...")
 # generate observational report  in HTML
 pg = HTML()
 body = pg.body(style="font-family:Sans-Serif")
@@ -1477,7 +1496,7 @@ f = open(REPORT_DIR +"group_summary.pdf", 'wb')
 pisa.showLogging()
 pisa.CreatePDF(str(pg), dest=f)
 f.close()
-
+print("\t\tCompiling pdfs...")
 # merge with group plots pdf
 input1 = open(REPORT_DIR + "group_summary.pdf", 'rb')
 input2 = open(REPORT_DIR + 'PCRL Group Report ' +\
@@ -1492,12 +1511,13 @@ output.close()
 input1.close() 
 input2.close()
 os.remove(REPORT_DIR +"group_summary.pdf")
-
+print("\t\tDone.")
 
 ## (b) Individual Reports
+print("\tIndividual Reports:")
 # import observation data from tables
 observations = TABLES['observation']
-
+print("\t\tGetting observations, rendering summaries and compiling pdfs for each monkey...")
 # for each monkey
 for monk, data in MONKEYS.items():
 	mid = monk
@@ -1579,5 +1599,6 @@ for monk, data in MONKEYS.items():
 	input1.close() 
 	input2.close()
 	os.remove(REPORT_DIR + mid +"-observational.pdf")
-
+print("\t\tDone.")
+print("\nDONE ALL.\n")
 
