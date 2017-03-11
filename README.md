@@ -20,24 +20,6 @@ routine daily data entry and analysis tasks for this study. The intended purpose
 	(2)	efficient structured storage of project data in a central database (db); and 
 	(3)	daily automated data analysis and reporting.  
 
-Of these, (2) was the original/ most important motivator. 
-
-First, (2) allows for efficient storage of data, as db's have much smaller memory 
-footprints than flat files. Consider the current memory usage 
-of `'DataArchive2/'`, which holds this project's flat files. As of today
-(2/2/2016) it uses `288 GB`. Assuming roughly 1/3 of that is used for the data files 
-(it contains other items as well), that's about `83 GB`. Compare that to
-`'PCRL_2016_data_0.db'`, which contains the exact same data: `0.65 GB`. That's 125 times as small! 
-And this difference is not trivial, given previous memory issues. 
-
-Second, and most important, having a single file contain all the data tremendously 
-simplifies analysis: no need to waste time or introduce error wrangling 
-up all the data; it's already in one place. Further, Structured Query 
-Language ([SQL](https://www.khanacademy.org/computing/computer-programming/sql)) is a powerful read/writeable interface to the data, and adds to the analysis. (See E and F for details.)     
-
-In sum, the main purpose is to facilitate a centralized,  structured data store (in this case, an [SQLite](https://www.sqlite.org/cli.html) db) for the study, as this adds significant value to the ultimate goal of proper analysis. And as it comes closer to that, this value will become increasingly appreciated. 
-
-
 
 ### B. DIRECTORY STRUCTURE
 Note: ignore (and do not modify) files/ directories not listed here. 
