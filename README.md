@@ -98,7 +98,7 @@ second and third are scripts that automate data storage and report generation. T
 executed consecutively in the task `update_db_n_report` in `Task Scheduler Library` the 
 `Task Scheduler` app.
 
-1. ####Observational Data Recording
+1. **Observational Data Recording**
 
 		Directory: "PCRL_Logbook\PCRLLogbook[final]\PCRLLogbook[final]\" 	
 		File: 	   "PCRL_Logbook\PCRLLogbook[final]\PCRLLogbook[final]\bin\Release\PCRLLogbook.exe"
@@ -111,7 +111,7 @@ executed consecutively in the task `update_db_n_report` in `Task Scheduler Libra
 
 
 
-2. ####Importing Data in DB   
+2. **Importing Data in DB**   
 	
 		File: "PCRL_Logbook\scripts\update_db.py"
 
@@ -126,7 +126,7 @@ executed consecutively in the task `update_db_n_report` in `Task Scheduler Libra
   
 
 		
-3. ####Report Generation
+3. **Report Generation**
 
 		File: "PCRL_Logbook\scripts\GenerateDailyReports.py"
 
@@ -199,12 +199,12 @@ executed consecutively in the task `update_db_n_report` in `Task Scheduler Libra
 	
   
 ### D. CONFIGURATION
-1. ####Overview  
+1. **Overview**  
 The config file is a JSON (JavaScript Object Notation) file, which is a popular file format for storing software configurations, and resource description framework (RDF) data more generally. Basically, it consists of a list of `"<field>": <value>` pairs, where each field is a string (i.e. has quotes around it) and each value is one of various data types (strings, arrays/ lists, dictionaries, etc). For more information, see [www.json.org](www.json.org). 
 
 
 
-2. ####Notes on Editing  
+2. **Notes on Editing**  
 The main idea is: **leave all formatting as is, only change value**. For instance, say you want to change where reports are saved `report_dir` from `"E:\\Dropbox\\PCRL Reports\\"` to `"E:\\OtherDir\\PCRL_Reports"`. Only change what is inside the quotes, and make sure to keep the trailing comma as this separates `"<field>":<value>, "<field>":<value>` pairs. The change would look like: 
 
 		# from
@@ -241,7 +241,7 @@ The main idea is: **leave all formatting as is, only change value**. For instanc
 	in Powershell. This will generate a new config file in the base directory. Only do this as a last resort as this will result in the loss of all changes to the config file.  
 
 
-3. ####Fields 
+3. **Fields** 
 
 		"days":  
 		- How many days from yesterday do you want included in the daily reports? 
@@ -338,7 +338,7 @@ The main idea is: **leave all formatting as is, only change value**. For instanc
 
 
 ### E. DATABASE
-1. ####Working with the db
+1. **Working with the db**
 `SqliteBrowser` is a user-friendly interfaceß for `SQLite` dbs. It allows for easy data browsing, query execution and basic plotting. To view the project db:    
 
 	+ Open `SqliteBrowser` in `"C:\Users\Server1\Desktop\PCRL_Logbook\scripts\"`. 
@@ -346,7 +346,7 @@ The main idea is: **leave all formatting as is, only change value**. For instanc
 
 	The primary tabs of interest are `Browse Data` and `Execute SQL`. Also see the secondary tabs at bottom right that are useful `SQL Log` and `Plots`. 	
 
-2. ####Programmatically querying the db
+2. **Programmatically querying the db**
 Although `SqliteBrowser` is very convenient and a nice interface to test queries with, as the db gets bigger it will be prohibitively harder to work with. On the other hand, `SQLite`'s command-line interface is fast and useful for automating data export to other formats (such as `csv` aka `xlxs`). For example, to export feeding data for monkey `JB67` on `2016-03-15` to `csv`, open `PCRL_Logbook\scripts\sqlite3.exe` and do:  
 
 		SQLite version 3.8.10.2 2015-05-20 18:17:19
